@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Token Monitor Pro</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 397.7 311.7'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='360.88' y1='351.46' x2='141.21' y2='-69.29' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%2300ffa3'/%3E%3Cstop offset='1' stop-color='%23dc1fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='264.83' y1='401.6' x2='45.16' y2='-19.15' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%2300ffa3'/%3E%3Cstop offset='1' stop-color='%23dc1fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='c' x1='312.86' y1='376.53' x2='93.19' y2='-44.22' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%2300ffa3'/%3E%3Cstop offset='1' stop-color='%23dc1fff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7z' fill='url(%23a)'/%3E%3Cpath d='M64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8z' fill='url(%23b)'/%3E%3Cpath d='M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z' fill='url(%23c)'/%3E%3C/svg%3E">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-card: rgba(255, 255, 255, 0.1);
+            --bg-card-hover: rgba(255, 255, 255, 0.15);
+            --text-primary: #fff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(255, 255, 255, 0.2);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
+        body.light-mode {
+            --bg-primary: linear-gradient(135deg, #e0e7ff 0%, #fce7f3 100%);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 20px;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .status {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .status-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        /* View Mode Toggle */
+        .view-controls {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .view-mode-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-mode-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-mode-btn.active {
+            background: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sort-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* Config Panel */
+        .config-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .config-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .form-group input {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Tokens Grid */
+        .tokens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .tokens-grid.compact {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .tokens-grid.radar {
+            grid-template-columns: 1fr;
+        }
+
+        .token-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .token-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .token-card.breakout {
+            border: 2px solid var(--danger-color);
+            background: rgba(239, 68, 68, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        .token-card.warning {
+            border: 2px solid var(--warning-color);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
+            }
+        }
+
+        .token-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .token-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .token-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .token-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .token-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .token-symbol {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .token-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .price-display {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: var(--success-color);
+        }
+
+        .price-display.breakout-price {
+            color: var(--danger-color);
+        }
+
+        .price-change {
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .price-change.positive {
+            color: var(--success-color);
+        }
+
+        .price-change.negative {
+            color: var(--danger-color);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 150px;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .chart-container canvas {
+            max-height: 150px;
+        }
+
+        /* Metrics */
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .metric {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            opacity: 0.7;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success-color);
+            transition: width 0.3s;
+        }
+
+        /* Radar Mode */
+        .token-card.radar-mode {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            gap: 20px;
+        }
+
+        .token-card.radar-mode .token-header {
+            margin-bottom: 0;
+            flex: 0 0 auto;
+        }
+
+        .token-card.radar-mode .metrics {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .token-card.radar-mode .metric {
+            flex: 1;
+        }
+
+        /* Alert Container */
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .alert {
+            background: rgba(239, 68, 68, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Alert History */
+        .alert-history {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .alert-history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-history-item .token-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-history-item .alert-time {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        /* Logs */
+        .logs {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .log-time {
+            color: var(--success-color);
+            margin-right: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+        }
+
+        /* Export Button */
+        .export-btn {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tokens-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .view-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <h1>🚀 Solana Token Monitor Pro</h1>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Changer de thème">🌓</button>
+            </div>
+            <p>GeckoTerminal API - 100% Gratuit - Enhanced Edition</p>
+            <div class="status">
+                <div class="status-item">
+                    <strong>Statut:</strong> <span id="status">Arrêté</span>
+                </div>
+                <div class="status-item">
+                    <strong>Checks:</strong> <span id="check-count">0</span>
+                </div>
+                <div class="status-item">
+                    <strong>Prochaine vérification:</strong> <span id="next-check">--</span>
+                </div>
+                <div class="status-item">
+                    <strong>Alertes envoyées:</strong> <span id="alert-count">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <h2>📊 Statistiques Globales</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Tokens surveillés</div>
+                    <div class="stat-value" id="stat-tokens">6</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Breakouts aujourd'hui</div>
+                    <div class="stat-value" id="stat-breakouts">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Meilleure performance</div>
+                    <div class="stat-value" id="stat-best-performer">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Volume total</div>
+                    <div class="stat-value" id="stat-total-volume">$0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Controls -->
+        <div class="view-controls">
+            <div class="view-mode-buttons">
+                <button class="view-mode-btn active" onclick="setViewMode('grid')" data-mode="grid">📊 Grille</button>
+                <button class="view-mode-btn" onclick="setViewMode('compact')" data-mode="compact">📱 Compact</button>
+                <button class="view-mode-btn" onclick="setViewMode('radar')" data-mode="radar">🎯 Radar</button>
+            </div>
+            <div class="sort-controls">
+                <label>Trier par:</label>
+                <select class="sort-select" id="sort-select" onchange="sortTokens()">
+                    <option value="default">Par défaut</option>
+                    <option value="distance">Distance à la bande</option>
+                    <option value="price">Prix</option>
+                    <option value="volume">Volume</option>
+                    <option value="name">Nom</option>
+                </select>
+            </div>
+            <div>
+                <button class="export-btn" onclick="exportAlertHistory()">📥 Exporter alertes</button>
+                <label style="margin-left: 10px;">
+                    <input type="checkbox" id="sound-toggle" checked> Son
+                </label>
+            </div>
+        </div>
+
+        <!-- Config Panel -->
+        <div class="config-panel">
+            <h2>⚙️ Configuration</h2>
+            <div class="config-form">
+                <div class="form-group">
+                    <label>Bot Token Telegram</label>
+                    <input type="password" id="telegram-token" placeholder="1234567890:ABCdefGHIjklMNOpqrsTUVwxyz">
+                </div>
+                <div class="form-group">
+                    <label>Chat ID Telegram</label>
+                    <input type="text" id="telegram-chat-id" placeholder="123456789">
+                </div>
+                <div class="form-group">
+                    <label>Fréquence (secondes)</label>
+                    <input type="number" id="check-frequency" value="30" min="5">
+                </div>
+            </div>
+            <button class="btn btn-primary" id="start-btn" onclick="startMonitoring()">
+                ▶️ Démarrer la surveillance
+            </button>
+            <button class="btn btn-danger" id="stop-btn" onclick="stopMonitoring()" style="display: none;">
+                ⏸️ Arrêter
+            </button>
+        </div>
+
+        <!-- Tokens Container -->
+        <div id="tokens-container" class="tokens-grid">
+            <div class="loading">Configurez vos paramètres Telegram et démarrez la surveillance...</div>
+        </div>
+
+        <!-- Alert History -->
+        <div class="alert-history">
+            <h2>📜 Historique des Alertes</h2>
+            <div id="alert-history-container">
+                <p style="opacity: 0.7; text-align: center; padding: 20px;">Aucune alerte pour le moment</p>
+            </div>
+        </div>
+
+        <!-- Logs -->
+        <div class="logs" id="logs">
+            <div class="log-entry">
+                <span class="log-time">[--:--:--]</span> En attente du démarrage...
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div class="alert-container" id="alert-container"></div>
+
+    <!-- Audio for alerts -->
+    <audio id="alert-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGG36+mhUxIOT6Xh8bVhGwU5k9jyx3MoBiiB0PLYiDcIF2K46+qiUxILTqPh8bJeGgU3k9fxx3MoBiZ+zvLaizsKF2S56+mjUhEKTKHf8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bJeGgU2k9bxx3MoBiZ+zvLaiTsKGGS56+mjUhEKTKHf8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8bVjHQY6ldnyxnUrByeC0fLXiTcIF2O46umhURAKTKDe8Q==" type="audio/wav">
+    </audio>
+
+    <script>
+        // Configuration
+        const TOKENS = [
+            {
+                name: "67",
+                symbol: "$67",
+                address: "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump",
+                pool: "DMAFL613XTipuA3jFNYczavWT7XsiYf9cR3qmRMZQhB6",
+                candle_interval: 15
+            },
+            {
+                name: "FWOG",
+                symbol: "$FWOG",
+                address: "A8C3xuqscfmyLrte3VmTqrAq8kgMASius9AFNANwpump",
+                pool: "AB1eu2L1Jr3nfEft85AuD2zGksUbam1Kr8MR3uM2sjwt",
+                candle_interval: 15
+            },
+            {
+                name: "UMBRA",
+                symbol: "$UMBRA",
+                address: "PRVT6TB7uss3FrUd2D9xs2zqDBsa3GbMJMwCQsgmeta",
+                pool: "7dVri3qjYD3uobSZL3Zth8vSCgU6r6R2nvFsh7uVfDte",
+                candle_interval: 15
+            },
+            {
+                name: "WOJAK",
+                symbol: "$WOJAK",
+                address: "8J69rbLTzWWgUJziFY8jeu5tDwEPBwUz4pKBMr5rpump",
+                pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7",
+                candle_interval: 15
+            },
+            {
+                name: "AVICI",
+                symbol: "$AVICI",
+                address: "BANKJmvhT8tiJRsBSS1n2HryMBPvT5Ze4HU95DUAmeta",
+                pool: "5gB4NPgFB3MHFHSeKN4sbaY6t9MB8ikCe9HyiKYid4Td",
+                candle_interval: 15
+            },
+            {
+                name: "SPSC",
+                symbol: "$SPSC",
+                address: "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
+                pool: "GcbZqAaWWmCse1Q68sfd5Sh32ZuHWPugq1NYowQuc5k1",
+                candle_interval: 15
+            }
+        ];
+
+        const BOLLINGER_PERIOD = 20;
+        const BOLLINGER_STD = 2;
+        const ALERT_COOLDOWN = 900000; // 15 minutes
+
+        // État
+        let isMonitoring = false;
+        let checkInterval = null;
+        let checkCount = 0;
+        let alertCount = 0;
+        let lastAlertTimes = {};
+        let telegramToken = '';
+        let telegramChatId = '';
+        let checkFrequency = 30;
+        let viewMode = 'grid';
+        let tokenData = {};
+        let priceHistory = {};
+        let alertHistory = [];
+        let charts = {};
+
+        // Charger la configuration
+        window.addEventListener('load', () => {
+            const savedToken = localStorage.getItem('telegram_token');
+            const savedChatId = localStorage.getItem('telegram_chat_id');
+            const savedFrequency = localStorage.getItem('check_frequency');
+            const savedTheme = localStorage.getItem('theme');
+            const savedViewMode = localStorage.getItem('view_mode');
+
+            if (savedToken) document.getElementById('telegram-token').value = savedToken;
+            if (savedChatId) document.getElementById('telegram-chat-id').value = savedChatId;
+            if (savedFrequency) document.getElementById('check-frequency').value = savedFrequency;
+            if (savedTheme === 'light') document.body.classList.add('light-mode');
+            if (savedViewMode) setViewMode(savedViewMode);
+
+            // Initialiser l'historique des prix
+            TOKENS.forEach(token => {
+                priceHistory[token.name] = [];
+            });
+        });
+
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        // View Mode
+        function setViewMode(mode) {
+            viewMode = mode;
+            localStorage.setItem('view_mode', mode);
+
+            const container = document.getElementById('tokens-container');
+            container.className = 'tokens-grid';
+
+            if (mode === 'compact') container.classList.add('compact');
+            if (mode === 'radar') container.classList.add('radar');
+
+            document.querySelectorAll('.view-mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.mode === mode) btn.classList.add('active');
+            });
+
+            if (isMonitoring) renderTokenCards();
+        }
+
+        // Sort Tokens
+        function sortTokens() {
+            const sortBy = document.getElementById('sort-select').value;
+            const container = document.getElementById('tokens-container');
+            const cards = Array.from(container.children);
+
+            cards.sort((a, b) => {
+                const tokenA = TOKENS.find(t => a.id === `token-${t.name}`);
+                const tokenB = TOKENS.find(t => b.id === `token-${t.name}`);
+
+                if (!tokenA || !tokenB) return 0;
+
+                const dataA = tokenData[tokenA.name] || {};
+                const dataB = tokenData[tokenB.name] || {};
+
+                switch(sortBy) {
+                    case 'distance':
+                        return (dataA.distance || 0) - (dataB.distance || 0);
+                    case 'price':
+                        return (dataB.current_price || 0) - (dataA.current_price || 0);
+                    case 'volume':
+                        return (dataB.volume || 0) - (dataA.volume || 0);
+                    case 'name':
+                        return tokenA.name.localeCompare(tokenB.name);
+                    default:
+                        return 0;
+                }
+            });
+
+            cards.forEach(card => container.appendChild(card));
+        }
+
+        // Fonctions utilitaires
+        function formatPrice(price) {
+            if (!price) return 'N/A';
+            if (price < 0.000001) return `$${price.toFixed(10)}`;
+            if (price < 0.01) return `$${price.toFixed(8)}`;
+            if (price < 1) return `$${price.toFixed(6)}`;
+            return `$${price.toFixed(2)}`;
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('fr-FR');
+        }
+
+        function formatVolume(volume) {
+            if (!volume) return '$0';
+            if (volume >= 1e6) return `$${(volume / 1e6).toFixed(2)}M`;
+            if (volume >= 1e3) return `$${(volume / 1e3).toFixed(2)}K`;
+            return `$${volume.toFixed(0)}`;
+        }
+
+        function addLog(message) {
+            const logsContainer = document.getElementById('logs');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-time">[${formatTime(new Date())}]</span> ${message}`;
+            logsContainer.insertBefore(logEntry, logsContainer.firstChild);
+
+            while (logsContainer.children.length > 50) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+        }
+
+        function playAlertSound() {
+            if (document.getElementById('sound-toggle').checked) {
+                const audio = document.getElementById('alert-sound');
+                audio.play().catch(e => console.log('Cannot play sound:', e));
+            }
+        }
+
+        // API Functions
+        async function getGeckoTerminalOHLCV(poolAddress, aggregate = 15, limit = 25) {
+            try {
+                const url = `https://api.geckoterminal.com/api/v2/networks/solana/pools/${poolAddress}/ohlcv/minute`;
+                const params = new URLSearchParams({
+                    aggregate: aggregate,
+                    limit: limit,
+                    currency: 'usd'
+                });
+
+                const response = await fetch(`${url}?${params}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+
+                if (data?.data?.attributes?.ohlcv_list) {
+                    return data.data.attributes.ohlcv_list.map(candle => ({
+                        timestamp: candle[0],
+                        open: parseFloat(candle[1]),
+                        high: parseFloat(candle[2]),
+                        low: parseFloat(candle[3]),
+                        close: parseFloat(candle[4]),
+                        volume: parseFloat(candle[5])
+                    }));
+                }
+
+                return null;
+            } catch (error) {
+                console.error('Erreur GeckoTerminal OHLCV:', error);
+                return null;
+            }
+        }
+
+        async function getGeckoTerminalRealtimePrice(poolAddress) {
+            try {
+                const url = `https://api.geckoterminal.com/api/v2/networks/solana/pools/${poolAddress}?include=base_token`;
+                const response = await fetch(url, {
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+
+                const price = data?.data?.attributes?.base_token_price_usd ? parseFloat(data.data.attributes.base_token_price_usd) : null;
+                const imageUrl = data?.included?.[0]?.attributes?.image_url || data?.data?.attributes?.image_url || null;
+                const priceChange24h = data?.data?.attributes?.price_change_percentage?.h24 || 0;
+
+                return { price, imageUrl, priceChange24h };
+            } catch (error) {
+                console.error('Erreur prix temps réel:', error);
+                return { price: null, imageUrl: null, priceChange24h: 0 };
+            }
+        }
+
+        async function sendTelegramMessage(message) {
+            if (!telegramToken || !telegramChatId) {
+                console.warn('Configuration Telegram manquante');
+                return false;
+            }
+
+            try {
+                const url = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: telegramChatId,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+
+                return response.ok;
+            } catch (error) {
+                console.error('Erreur Telegram:', error);
+                return false;
+            }
+        }
+
+        // Calculs
+        function calculateBollingerBands(prices, period = 20, stdDev = 2) {
+            if (prices.length < period) return { upper: null, middle: null, lower: null };
+
+            const slice = prices.slice(-period);
+            const mean = slice.reduce((a, b) => a + b, 0) / period;
+            const variance = slice.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / period;
+            const std = Math.sqrt(variance);
+
+            return {
+                upper: mean + (stdDev * std),
+                middle: mean,
+                lower: mean - (stdDev * std)
+            };
+        }
+
+        function calculateRSI(prices, period = 14) {
+            if (prices.length < period + 1) return null;
+
+            let gains = 0;
+            let losses = 0;
+
+            for (let i = prices.length - period; i < prices.length; i++) {
+                const change = prices[i] - prices[i - 1];
+                if (change > 0) gains += change;
+                else losses += Math.abs(change);
+            }
+
+            const avgGain = gains / period;
+            const avgLoss = losses / period;
+
+            if (avgLoss === 0) return 100;
+            const rs = avgGain / avgLoss;
+            return 100 - (100 / (1 + rs));
+        }
+
+        // UI Updates
+        function updateStatus(status) {
+            document.getElementById('status').textContent = status;
+        }
+
+        function updateNextCheckTime(seconds) {
+            const nextCheck = new Date(Date.now() + seconds * 1000);
+            document.getElementById('next-check').textContent = formatTime(nextCheck);
+        }
+
+        function updateStats() {
+            document.getElementById('stat-tokens').textContent = TOKENS.length;
+            document.getElementById('stat-breakouts').textContent = alertHistory.length;
+
+            let totalVolume = 0;
+            let bestPerformer = { name: '--', change: -Infinity };
+
+            TOKENS.forEach(token => {
+                const data = tokenData[token.name];
+                if (data) {
+                    totalVolume += data.volume || 0;
+                    if (data.priceChange24h > bestPerformer.change) {
+                        bestPerformer = { name: token.symbol, change: data.priceChange24h };
+                    }
+                }
+            });
+
+            document.getElementById('stat-total-volume').textContent = formatVolume(totalVolume);
+            document.getElementById('stat-best-performer').textContent =
+                bestPerformer.name !== '--' ? `${bestPerformer.name} (+${bestPerformer.change.toFixed(2)}%)` : '--';
+        }
+
+        function showAlert(token, info) {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = 'alert';
+            alert.innerHTML = `
+                <div class="alert-title">🚨 BREAKOUT: ${token.symbol}</div>
+                <div>Prix: ${formatPrice(info.current_price)}</div>
+                <div>Bande haute: ${formatPrice(info.upper_band)}</div>
+                <div>Déviation: +${info.deviation.toFixed(2)}%</div>
+            `;
+            alertContainer.appendChild(alert);
+
+            setTimeout(() => alert.remove(), 10000);
+
+            playAlertSound();
+
+            if (Notification.permission === 'granted') {
+                new Notification(`🚨 Breakout ${token.symbol}`, {
+                    body: `Prix: ${formatPrice(info.current_price)} (+${info.deviation.toFixed(2)}%)`,
+                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="75" font-size="75">🚨</text></svg>'
+                });
+            }
+
+            // Ajouter à l'historique
+            alertHistory.push({
+                token: token,
+                info: info,
+                timestamp: Date.now()
+            });
+            updateAlertHistory();
+        }
+
+        function updateAlertHistory() {
+            const container = document.getElementById('alert-history-container');
+
+            if (alertHistory.length === 0) {
+                container.innerHTML = '<p style="opacity: 0.7; text-align: center; padding: 20px;">Aucune alerte pour le moment</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            alertHistory.slice().reverse().forEach(alert => {
+                const item = document.createElement('div');
+                item.className = 'alert-history-item';
+                item.innerHTML = `
+                    <div class="token-info">
+                        <strong>${alert.token.symbol}</strong>
+                        <span>${formatPrice(alert.info.current_price)}</span>
+                        <span style="color: var(--danger-color);">+${alert.info.deviation.toFixed(2)}%</span>
+                    </div>
+                    <div class="alert-time">${new Date(alert.timestamp).toLocaleString('fr-FR')}</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function exportAlertHistory() {
+            if (alertHistory.length === 0) {
+                alert('Aucune alerte à exporter');
+                return;
+            }
+
+            const csv = ['Token,Symbol,Prix,Deviation,Date'].concat(
+                alertHistory.map(a =>
+                    `${a.token.name},${a.token.symbol},${a.info.current_price},${a.info.deviation},${new Date(a.timestamp).toISOString()}`
+                )
+            ).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `solana-alerts-${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function createChart(token, candles) {
+            const ctx = document.getElementById(`chart-${token.name}`);
+            if (!ctx) return;
+
+            const labels = candles.map(c => new Date(c.timestamp * 1000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
+            const prices = candles.map(c => c.close);
+            const bands = calculateBollingerBands(prices, BOLLINGER_PERIOD, BOLLINGER_STD);
+
+            const upperBandData = new Array(candles.length).fill(bands.upper);
+            const middleBandData = new Array(candles.length).fill(bands.middle);
+            const lowerBandData = new Array(candles.length).fill(bands.lower);
+
+            if (charts[token.name]) {
+                charts[token.name].destroy();
+            }
+
+            charts[token.name] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Prix',
+                            data: prices,
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'BB Haute',
+                            data: upperBandData,
+                            borderColor: 'rgb(239, 68, 68)',
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false
+                        },
+                        {
+                            label: 'BB Moyenne',
+                            data: middleBandData,
+                            borderColor: 'rgba(255, 255, 255, 0.5)',
+                            borderDash: [2, 2],
+                            pointRadius: 0,
+                            fill: false
+                        },
+                        {
+                            label: 'BB Basse',
+                            data: lowerBandData,
+                            borderColor: 'rgb(59, 130, 246)',
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return formatPrice(value);
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                maxTicksLimit: 6
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTokenCards() {
+            const container = document.getElementById('tokens-container');
+            container.innerHTML = '';
+
+            TOKENS.forEach(token => {
+                const card = document.createElement('div');
+                card.className = 'token-card';
+                if (viewMode === 'radar') card.classList.add('radar-mode');
+                card.id = `token-${token.name}`;
+                card.onclick = (e) => {
+                    if (!e.target.closest('.action-btn')) {
+                        window.open(`https://gmgn.ai/sol/token/${token.address}`, '_blank');
+                    }
+                };
+
+                if (viewMode === 'radar') {
+                    card.innerHTML = `
+                        <div class="token-header">
+                            <div class="token-info">
+                                <img class="token-icon" id="icon-${token.name}" src="https://api.dicebear.com/7.x/shapes/svg?seed=${token.symbol}" alt="${token.symbol}">
+                                <div class="token-details">
+                                    <div class="token-name">${token.name}</div>
+                                    <div class="token-symbol">${token.symbol}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="price-display" id="price-${token.name}">--</div>
+                        <div class="metrics">
+                            <div class="metric">
+                                <div class="metric-label">Distance</div>
+                                <div class="metric-value" id="distance-${token.name}">--</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Volume</div>
+                                <div class="metric-value" id="volume-${token.name}">--</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">RSI</div>
+                                <div class="metric-value" id="rsi-${token.name}">--</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="token-header">
+                            <div class="token-info">
+                                <img class="token-icon" id="icon-${token.name}" src="https://api.dicebear.com/7.x/shapes/svg?seed=${token.symbol}" alt="${token.symbol}">
+                                <div class="token-details">
+                                    <div class="token-name">${token.name}</div>
+                                    <div class="token-symbol">${token.symbol}</div>
+                                </div>
+                            </div>
+                            <div class="token-actions">
+                                <button class="action-btn" onclick="event.stopPropagation(); pauseToken('${token.name}')" title="Pause" id="pause-${token.name}">⏸️</button>
+                            </div>
+                        </div>
+                        <div class="price-display" id="price-${token.name}">--<span class="price-change" id="change-${token.name}"></span></div>
+                        ${viewMode === 'compact' ? '' : '<div class="chart-container"><canvas id="chart-' + token.name + '"></canvas></div>'}
+                        <div class="metrics">
+                            <div class="metric">
+                                <div class="metric-label">Bande haute</div>
+                                <div class="metric-value" id="upper-${token.name}">--</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Moyenne</div>
+                                <div class="metric-value" id="middle-${token.name}">--</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Distance</div>
+                                <div class="metric-value" id="distance-${token.name}">--</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Volume</div>
+                                <div class="metric-value" id="volume-${token.name}">--</div>
+                            </div>
+                            ${viewMode === 'compact' ? '' : '<div class="metric"><div class="metric-label">RSI(14)</div><div class="metric-value" id="rsi-' + token.name + '">--</div></div>'}
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-${token.name}" style="width: 0%"></div>
+                        </div>
+                    `;
+                }
+                container.appendChild(card);
+            });
+        }
+
+        function updateTokenCard(token, info, isBreakout, candles) {
+            const card = document.getElementById(`token-${token.name}`);
+            const priceEl = document.getElementById(`price-${token.name}`);
+            const upperEl = document.getElementById(`upper-${token.name}`);
+            const middleEl = document.getElementById(`middle-${token.name}`);
+            const distanceEl = document.getElementById(`distance-${token.name}`);
+            const volumeEl = document.getElementById(`volume-${token.name}`);
+            const progressEl = document.getElementById(`progress-${token.name}`);
+            const changeEl = document.getElementById(`change-${token.name}`);
+            const rsiEl = document.getElementById(`rsi-${token.name}`);
+
+            priceEl.textContent = formatPrice(info.current_price);
+            if (upperEl) upperEl.textContent = formatPrice(info.upper_band);
+            if (middleEl) middleEl.textContent = formatPrice(info.middle_band);
+            if (volumeEl) volumeEl.textContent = formatVolume(info.volume);
+
+            if (changeEl && info.priceChange24h !== undefined) {
+                const change = parseFloat(info.priceChange24h);
+                changeEl.textContent = ` ${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
+                changeEl.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
+            }
+
+            if (rsiEl && info.rsi !== undefined) {
+                rsiEl.textContent = info.rsi ? info.rsi.toFixed(2) : '--';
+                if (info.rsi) {
+                    rsiEl.style.color = info.rsi > 70 ? 'var(--danger-color)' : info.rsi < 30 ? 'var(--success-color)' : 'inherit';
+                }
+            }
+
+            if (info.upper_band && info.current_price) {
+                const distance = ((info.upper_band - info.current_price) / info.current_price * 100);
+                if (distanceEl) {
+                    distanceEl.textContent = `${distance > 0 ? '+' : ''}${distance.toFixed(2)}%`;
+                }
+
+                const progress = Math.min(100, Math.max(0, 100 - (distance / 2) * 10));
+                if (progressEl) {
+                    progressEl.style.width = `${progress}%`;
+
+                    if (progress > 90) {
+                        progressEl.style.background = 'var(--danger-color)';
+                        if (!isBreakout) card.classList.add('warning');
+                    } else if (progress > 70) {
+                        progressEl.style.background = 'var(--warning-color)';
+                        card.classList.remove('warning');
+                    } else {
+                        progressEl.style.background = 'var(--success-color)';
+                        card.classList.remove('warning');
+                    }
+                }
+            }
+
+            if (isBreakout) {
+                card.classList.add('breakout');
+                priceEl.classList.add('breakout-price');
+            } else {
+                card.classList.remove('breakout');
+                priceEl.classList.remove('breakout-price');
+            }
+
+            // Update chart if not in radar mode
+            if (viewMode !== 'radar' && viewMode !== 'compact' && candles) {
+                createChart(token, candles);
+            }
+        }
+
+        // Monitoring
+        async function checkToken(token) {
+            if (token.paused) return;
+
+            try {
+                const realtimeData = await getGeckoTerminalRealtimePrice(token.pool);
+                const candles = await getGeckoTerminalOHLCV(token.pool, token.candle_interval, 25);
+
+                if (!candles || candles.length < BOLLINGER_PERIOD) {
+                    addLog(`❌ ${token.symbol}: Données insuffisantes (${candles ? candles.length : 0}/${BOLLINGER_PERIOD})`);
+                    return;
+                }
+
+                // Mettre à jour l'icône
+                if (realtimeData.imageUrl) {
+                    const iconEl = document.getElementById(`icon-${token.name}`);
+                    if (iconEl && iconEl.src.includes('dicebear')) {
+                        iconEl.src = realtimeData.imageUrl;
+                        iconEl.onerror = () => {
+                            iconEl.src = `https://api.dicebear.com/7.x/shapes/svg?seed=${token.symbol}`;
+                        };
+                    }
+                }
+
+                const closePrices = candles.map(c => c.close);
+                const currentPrice = realtimeData.price || closePrices[closePrices.length - 1];
+                const bands = calculateBollingerBands(closePrices, BOLLINGER_PERIOD, BOLLINGER_STD);
+                const rsi = calculateRSI(closePrices, 14);
+
+                // Stocker l'historique des prix
+                priceHistory[token.name].push(currentPrice);
+                if (priceHistory[token.name].length > 100) {
+                    priceHistory[token.name].shift();
+                }
+
+                const info = {
+                    current_price: currentPrice,
+                    upper_band: bands.upper,
+                    middle_band: bands.middle,
+                    lower_band: bands.lower,
+                    volume: candles[candles.length - 1].volume,
+                    priceChange24h: realtimeData.priceChange24h,
+                    rsi: rsi
+                };
+
+                const distance = bands.upper ? ((bands.upper - currentPrice) / currentPrice * 100) : null;
+                info.distance = distance;
+
+                tokenData[token.name] = info;
+
+                let isBreakout = false;
+
+                if (bands.upper && currentPrice >= bands.upper) {
+                    const lastAlert = lastAlertTimes[token.name] || 0;
+                    const timeSinceLastAlert = Date.now() - lastAlert;
+
+                    if (timeSinceLastAlert > ALERT_COOLDOWN) {
+                        isBreakout = true;
+                        lastAlertTimes[token.name] = Date.now();
+                        alertCount++;
+                        document.getElementById('alert-count').textContent = alertCount;
+
+                        const deviation = ((currentPrice - bands.upper) / bands.upper) * 100;
+                        info.deviation = deviation;
+
+                        const message = `🚨 ALERTE BOLLINGER BREAKOUT! 🚨\n\n💰 Token: ${token.symbol}\n📈 Prix: ${formatPrice(currentPrice)}\n\n📊 Bandes Bollinger (${token.candle_interval}min):\n  • Bande haute: ${formatPrice(bands.upper)}\n  • Moyenne: ${formatPrice(bands.middle)}\n  • Bande basse: ${formatPrice(bands.lower)}\n\n🔥 Deviation: +${deviation.toFixed(2)}% au-dessus\n📊 RSI: ${rsi ? rsi.toFixed(2) : 'N/A'}\n📊 Volume: ${formatVolume(info.volume)}\n\n🔗 https://gmgn.ai/sol/token/${token.address}\n\n⏰ ${formatTime(new Date())}`;
+
+                        await sendTelegramMessage(message);
+                        showAlert(token, info);
+                        addLog(`🚨 BREAKOUT ${token.symbol} - Alerte envoyée!`);
+                    }
+                }
+
+                updateTokenCard(token, info, isBreakout, candles);
+
+                const distanceStr = distance !== null ? distance.toFixed(2) : 'N/A';
+                addLog(`✅ ${token.symbol}: ${formatPrice(currentPrice)} | Distance: ${distanceStr}% | RSI: ${rsi ? rsi.toFixed(2) : 'N/A'}`);
+
+            } catch (error) {
+                console.error(`Erreur pour ${token.symbol}:`, error);
+                addLog(`❌ ${token.symbol}: Erreur - ${error.message}`);
+            }
+        }
+
+        function pauseToken(tokenName) {
+            const token = TOKENS.find(t => t.name === tokenName);
+            if (token) {
+                token.paused = !token.paused;
+                const btn = document.getElementById(`pause-${tokenName}`);
+                btn.textContent = token.paused ? '▶️' : '⏸️';
+                btn.title = token.paused ? 'Reprendre' : 'Pause';
+                addLog(`${token.paused ? '⏸️' : '▶️'} ${token.symbol} ${token.paused ? 'en pause' : 'repris'}`);
+            }
+        }
+
+        async function performCheck() {
+            checkCount++;
+            document.getElementById('check-count').textContent = checkCount;
+            addLog(`\n🔄 VÉRIFICATION #${checkCount}`);
+
+            for (const token of TOKENS) {
+                await checkToken(token);
+            }
+
+            updateStats();
+            updateNextCheckTime(checkFrequency);
+        }
+
+        function startMonitoring() {
+            telegramToken = document.getElementById('telegram-token').value;
+            telegramChatId = document.getElementById('telegram-chat-id').value;
+            checkFrequency = parseInt(document.getElementById('check-frequency').value);
+
+            if (!telegramToken || !telegramChatId) {
+                alert('⚠️ Veuillez configurer votre Bot Token et Chat ID Telegram');
+                return;
+            }
+
+            localStorage.setItem('telegram_token', telegramToken);
+            localStorage.setItem('telegram_chat_id', telegramChatId);
+            localStorage.setItem('check_frequency', checkFrequency);
+
+            if (Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+
+            isMonitoring = true;
+            updateStatus('🟢 Actif');
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('stop-btn').style.display = 'inline-block';
+
+            renderTokenCards();
+            addLog('🚀 Surveillance démarrée!');
+
+            performCheck();
+            checkInterval = setInterval(performCheck, checkFrequency * 1000);
+        }
+
+        function stopMonitoring() {
+            isMonitoring = false;
+            clearInterval(checkInterval);
+            updateStatus('🔴 Arrêté');
+            document.getElementById('start-btn').style.display = 'inline-block';
+            document.getElementById('stop-btn').style.display = 'none';
+            addLog('⏸️ Surveillance arrêtée');
+        }
+
+        // Initialisation
+        addLog('✅ Interface Pro chargée - Prêt à démarrer');
+    </script>
+</body>
+</html>
