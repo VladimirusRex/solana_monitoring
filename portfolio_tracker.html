@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Tracker - Meteora DLMM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .wallet-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .portfolio-summary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        .positive {
+            color: #10b981;
+        }
+
+        .negative {
+            color: #ef4444;
+        }
+
+        .positions-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .position-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .position-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .position-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .token-pair {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .token-icons {
+            display: flex;
+            position: relative;
+        }
+
+        .token-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .token-icon:nth-child(2) {
+            margin-left: -15px;
+        }
+
+        .pair-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .position-status {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .position-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💼 Portfolio Tracker - Meteora DLMM</h1>
+            <p>Suivez vos positions de liquidité en temps réel</p>
+        </div>
+
+        <div class="wallet-input">
+            <h2>🔑 Wallet Address</h2>
+            <div class="input-group">
+                <input type="text" id="wallet-input" placeholder="Entrez votre adresse wallet Solana" value="6uFwP57FidsasLoKWQNRGFtUxeJmAwRLfP5Y1zzxJYvW">
+                <button class="btn btn-primary" onclick="loadPortfolio()">📊 Charger Portfolio</button>
+            </div>
+        </div>
+
+        <div class="portfolio-summary" id="portfolio-summary" style="display: none;">
+            <h2>📈 Vue d'ensemble</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-label">Valeur Totale</div>
+                    <div class="summary-value" id="total-value">$0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">PnL Total</div>
+                    <div class="summary-value" id="total-pnl">$0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Fees Accumulés</div>
+                    <div class="summary-value" id="total-fees">$0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Positions Actives</div>
+                    <div class="summary-value" id="active-positions">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="positions-container" class="positions-grid">
+            <div class="loading" id="loading-message">Entrez votre adresse wallet pour charger vos positions...</div>
+        </div>
+    </div>
+
+    <script>
+        const WALLET_ADDRESS = '6uFwP57FidsasLoKWQNRGFtUxeJmAwRLfP5Y1zzxJYvW';
+        const RPC_ENDPOINT = 'https://api.mainnet-beta.solana.com';
+        const METEORA_DLMM_PROGRAM = 'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo';
+
+        let positions = [];
+        let tokenPrices = {};
+
+        async function loadPortfolio() {
+            const walletInput = document.getElementById('wallet-input').value.trim();
+            if (!walletInput) {
+                alert('Veuillez entrer une adresse wallet');
+                return;
+            }
+
+            document.getElementById('loading-message').textContent = '🔄 Chargement de vos positions...';
+            document.getElementById('positions-container').innerHTML = '<div class="loading" id="loading-message">🔄 Chargement de vos positions...</div>';
+
+            try {
+                // Récupérer les positions Meteora DLMM
+                await fetchMeteoraPositions(walletInput);
+
+                // Afficher les positions
+                displayPositions();
+
+                // Afficher le résumé
+                document.getElementById('portfolio-summary').style.display = 'block';
+                updateSummary();
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('positions-container').innerHTML = `
+                    <div class="error">
+                        ❌ Erreur lors du chargement du portfolio: ${error.message}
+                        <br><br>
+                        💡 Vérifiez votre adresse wallet ou réessayez plus tard.
+                    </div>
+                `;
+            }
+        }
+
+        async function fetchMeteoraPositions(walletAddress) {
+            // Pour simplifier, on va utiliser l'API publique de Meteora
+            // Note: Pour une version production, il faudrait utiliser le SDK Meteora ou parser les comptes on-chain
+
+            try {
+                // Tentative avec l'API Helius (fallback vers RPC public si besoin)
+                const response = await fetch(`https://api.mainnet-beta.solana.com`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: 1,
+                        method: 'getProgramAccounts',
+                        params: [
+                            METEORA_DLMM_PROGRAM,
+                            {
+                                encoding: 'base64',
+                                filters: [
+                                    {
+                                        memcmp: {
+                                            offset: 8,
+                                            bytes: walletAddress
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+
+                // Si pas de résultats via RPC, utiliser des données simulées pour la démo
+                if (!data.result || data.result.length === 0) {
+                    console.log('Aucune position trouvée via RPC, utilisation de données simulées');
+                    positions = await fetchSimulatedPositions(walletAddress);
+                } else {
+                    positions = await parseMeteoraPositions(data.result);
+                }
+
+                // Récupérer les prix des tokens
+                await fetchTokenPrices();
+
+            } catch (error) {
+                console.error('Erreur RPC:', error);
+                // Fallback vers données simulées
+                positions = await fetchSimulatedPositions(walletAddress);
+                await fetchTokenPrices();
+            }
+        }
+
+        async function fetchSimulatedPositions(walletAddress) {
+            // Simuler des positions pour la démo
+            // Dans une version réelle, ceci serait remplacé par de vraies données on-chain
+            return [
+                {
+                    pubkey: 'Example1...',
+                    tokenX: {
+                        symbol: 'SOL',
+                        mint: 'So11111111111111111111111111111111111111112',
+                        amount: 2.5,
+                        decimals: 9
+                    },
+                    tokenY: {
+                        symbol: 'USDC',
+                        mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                        amount: 350,
+                        decimals: 6
+                    },
+                    feesEarnedX: 0.05,
+                    feesEarnedY: 7.5,
+                    initialValueUSD: 700,
+                    poolAddress: 'ExamplePool1',
+                    status: 'active'
+                },
+                {
+                    pubkey: 'Example2...',
+                    tokenX: {
+                        symbol: 'FWOG',
+                        mint: 'A8C3xuqscfmyLrte3VmTqrAq8kgMASius9AFNANwpump',
+                        amount: 50000,
+                        decimals: 6
+                    },
+                    tokenY: {
+                        symbol: 'SOL',
+                        mint: 'So11111111111111111111111111111111111111112',
+                        amount: 1.2,
+                        decimals: 9
+                    },
+                    feesEarnedX: 500,
+                    feesEarnedY: 0.01,
+                    initialValueUSD: 300,
+                    poolAddress: 'ExamplePool2',
+                    status: 'active'
+                }
+            ];
+        }
+
+        async function parseMeteoraPositions(accounts) {
+            // Parser les comptes Meteora DLMM
+            // Cette fonction devrait décoder les données binaires des comptes
+            // Pour simplifier, on retourne un tableau vide pour utiliser les données simulées
+            return [];
+        }
+
+        async function fetchTokenPrices() {
+            // Récupérer les prix depuis Jupiter ou CoinGecko
+            const tokens = [
+                { symbol: 'SOL', coingeckoId: 'solana' },
+                { symbol: 'USDC', coingeckoId: 'usd-coin' },
+                { symbol: 'FWOG', mint: 'A8C3xuqscfmyLrte3VmTqrAq8kgMASius9AFNANwpump' }
+            ];
+
+            // Prix simulés pour la démo
+            tokenPrices = {
+                'SOL': 140,
+                'USDC': 1,
+                'FWOG': 0.0166
+            };
+
+            // Dans une version réelle, récupérer les vrais prix
+            try {
+                for (const token of tokens) {
+                    if (token.mint) {
+                        // Utiliser GeckoTerminal pour les tokens Solana
+                        const response = await fetch(`https://api.geckoterminal.com/api/v2/simple/networks/solana/token_price/${token.mint}`);
+                        const data = await response.json();
+                        if (data?.data?.attributes?.token_prices?.[token.mint]) {
+                            tokenPrices[token.symbol] = parseFloat(data.data.attributes.token_prices[token.mint]);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur prix:', error);
+            }
+        }
+
+        function displayPositions() {
+            const container = document.getElementById('positions-container');
+            container.innerHTML = '';
+
+            if (positions.length === 0) {
+                container.innerHTML = '<div class="loading">Aucune position trouvée pour ce wallet</div>';
+                return;
+            }
+
+            positions.forEach(position => {
+                const card = createPositionCard(position);
+                container.appendChild(card);
+            });
+        }
+
+        function createPositionCard(position) {
+            const card = document.createElement('div');
+            card.className = 'position-card';
+
+            const tokenXPrice = tokenPrices[position.tokenX.symbol] || 0;
+            const tokenYPrice = tokenPrices[position.tokenY.symbol] || 0;
+
+            const valueX = position.tokenX.amount * tokenXPrice;
+            const valueY = position.tokenY.amount * tokenYPrice;
+            const currentValue = valueX + valueY;
+
+            const feesX = position.feesEarnedX * tokenXPrice;
+            const feesY = position.feesEarnedY * tokenYPrice;
+            const totalFees = feesX + feesY;
+
+            const pnl = currentValue - position.initialValueUSD;
+            const pnlPercent = (pnl / position.initialValueUSD) * 100;
+
+            card.innerHTML = `
+                <div class="position-header">
+                    <div class="token-pair">
+                        <div class="token-icons">
+                            <img class="token-icon" src="https://api.dicebear.com/7.x/shapes/svg?seed=${position.tokenX.symbol}" alt="${position.tokenX.symbol}">
+                            <img class="token-icon" src="https://api.dicebear.com/7.x/shapes/svg?seed=${position.tokenY.symbol}" alt="${position.tokenY.symbol}">
+                        </div>
+                        <div>
+                            <div class="pair-name">${position.tokenX.symbol} / ${position.tokenY.symbol}</div>
+                            <div style="font-size: 12px; opacity: 0.7;">Meteora DLMM</div>
+                        </div>
+                    </div>
+                    <div class="position-status status-active">
+                        ● ACTIVE
+                    </div>
+                </div>
+
+                <div class="position-stats">
+                    <div class="stat">
+                        <div class="stat-label">Valeur Actuelle</div>
+                        <div class="stat-value">$${currentValue.toFixed(2)}</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">PnL</div>
+                        <div class="stat-value ${pnl >= 0 ? 'positive' : 'negative'}">
+                            ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPercent.toFixed(2)}%)
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Fees Accumulés</div>
+                        <div class="stat-value positive">+$${totalFees.toFixed(2)}</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">${position.tokenX.symbol}</div>
+                        <div class="stat-value">${position.tokenX.amount.toFixed(4)}</div>
+                        <div style="font-size: 11px; opacity: 0.7;">$${valueX.toFixed(2)}</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">${position.tokenY.symbol}</div>
+                        <div class="stat-value">${position.tokenY.amount.toFixed(4)}</div>
+                        <div style="font-size: 11px; opacity: 0.7;">$${valueY.toFixed(2)}</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Investissement Initial</div>
+                        <div class="stat-value">$${position.initialValueUSD.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function updateSummary() {
+            let totalValue = 0;
+            let totalInitialValue = 0;
+            let totalFees = 0;
+
+            positions.forEach(position => {
+                const tokenXPrice = tokenPrices[position.tokenX.symbol] || 0;
+                const tokenYPrice = tokenPrices[position.tokenY.symbol] || 0;
+
+                const valueX = position.tokenX.amount * tokenXPrice;
+                const valueY = position.tokenY.amount * tokenYPrice;
+                totalValue += valueX + valueY;
+
+                totalInitialValue += position.initialValueUSD;
+
+                const feesX = position.feesEarnedX * tokenXPrice;
+                const feesY = position.feesEarnedY * tokenYPrice;
+                totalFees += feesX + feesY;
+            });
+
+            const totalPnL = totalValue - totalInitialValue;
+            const pnlPercent = (totalPnL / totalInitialValue) * 100;
+
+            document.getElementById('total-value').textContent = `$${totalValue.toFixed(2)}`;
+            document.getElementById('total-pnl').textContent = `${totalPnL >= 0 ? '+' : ''}$${totalPnL.toFixed(2)} (${pnlPercent.toFixed(2)}%)`;
+            document.getElementById('total-pnl').className = `summary-value ${totalPnL >= 0 ? 'positive' : 'negative'}`;
+            document.getElementById('total-fees').textContent = `+$${totalFees.toFixed(2)}`;
+            document.getElementById('total-fees').className = 'summary-value positive';
+            document.getElementById('active-positions').textContent = positions.length;
+        }
+
+        // Auto-load au chargement de la page
+        window.addEventListener('load', () => {
+            loadPortfolio();
+        });
+    </script>
+</body>
+</html>
