@@ -380,10 +380,10 @@
                 candle_interval: 15
             },
             {
-                name: "FWOG",
-                symbol: "$FWOG",
-                address: "A8C3xuqscfmyLrte3VmTqrAq8kgMASius9AFNANwpump",
-                pool: "AB1eu2L1Jr3nfEft85AuD2zGksUbam1Kr8MR3uM2sjwt",
+                name: "PIPPIN",
+                symbol: "$PIPPIN",
+                address: "Dfh5DzRgSvvCFDoYc2ciTkMrbDfRKybA4SoFbPmApump",
+                pool: "8WwcNqdZjCY5Pt7AkhupAFknV2txca9sq6YBkGzLbvdt",
                 candle_interval: 15
             },
             {
@@ -404,7 +404,7 @@
                 name: "AVICI",
                 symbol: "$AVICI",
                 address: "BANKJmvhT8tiJRsBSS1n2HryMBPvT5Ze4HU95DUAmeta",
-                pool: "5gB4NPgFB3MHFHSeKN4sbaY6t9MB8ikCe9HyiKYid4Td",
+                pool: "J7z6TZgWecZughSLJ41FsttUBTjH5oX3CQ5ZmD182BpD",
                 candle_interval: 15
             },
             {
@@ -710,6 +710,18 @@
                 const closePrices = candles.map(c => c.close);
                 const currentPrice = realtimeData.price || closePrices[closePrices.length - 1];
                 const bands = calculateBollingerBands(closePrices, BOLLINGER_PERIOD, BOLLINGER_STD);
+
+                // Debug log pour PIPPIN
+                if (token.symbol === '$PIPPIN') {
+                    console.log('🔍 DEBUG PIPPIN CLASSIQUE:', {
+                        nombreBougies: closePrices.length,
+                        derniersPrix: closePrices.slice(-5),
+                        prixActuel: currentPrice,
+                        bandeHaute: bands.upper,
+                        moyenne: bands.middle,
+                        bandeBasse: bands.lower
+                    });
+                }
 
                 const info = {
                     current_price: currentPrice,
