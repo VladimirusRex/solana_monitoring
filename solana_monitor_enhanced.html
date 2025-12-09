@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Token Monitor Pro</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 397.7 311.7'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='360.88' y1='351.46' x2='141.21' y2='-69.29' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%2300ffa3'/%3E%3Cstop offset='1' stop-color='%23dc1fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='264.83' y1='401.6' x2='45.16' y2='-19.15' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%2300ffa3'/%3E%3Cstop offset='1' stop-color='%23dc1fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='c' x1='312.86' y1='376.53' x2='93.19' y2='-44.22' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%2300ffa3'/%3E%3Cstop offset='1' stop-color='%23dc1fff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7z' fill='url(%23a)'/%3E%3Cpath d='M64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8z' fill='url(%23b)'/%3E%3Cpath d='M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z' fill='url(%23c)'/%3E%3C/svg%3E">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -394,17 +393,6 @@
             color: var(--danger-color);
         }
 
-        /* Chart Container */
-        .chart-container {
-            height: 150px;
-            margin: 15px 0;
-            position: relative;
-        }
-
-        .chart-container canvas {
-            max-height: 150px;
-        }
-
         /* Metrics */
         .metrics {
             display: grid;
@@ -684,7 +672,7 @@
                 </div>
                 <div class="form-group">
                     <label>Fréquence (secondes)</label>
-                    <input type="number" id="check-frequency" value="30" min="5">
+                    <input type="number" id="check-frequency" value="5" min="5">
                 </div>
             </div>
             <button class="btn btn-primary" id="start-btn" onclick="startMonitoring()">
@@ -735,17 +723,17 @@
                 candle_interval: 15
             },
             {
-                name: "FWOG",
-                symbol: "$FWOG",
-                address: "A8C3xuqscfmyLrte3VmTqrAq8kgMASius9AFNANwpump",
-                pool: "AB1eu2L1Jr3nfEft85AuD2zGksUbam1Kr8MR3uM2sjwt",
+                name: "PIPPIN",
+                symbol: "$PIPPIN",
+                address: "Dfh5DzRgSvvCFDoYc2ciTkMrbDfRKybA4SoFbPmApump",
+                pool: "8WwcNqdZjCY5Pt7AkhupAFknV2txca9sq6YBkGzLbvdt",
                 candle_interval: 15
             },
             {
-                name: "UMBRA",
-                symbol: "$UMBRA",
-                address: "PRVT6TB7uss3FrUd2D9xs2zqDBsa3GbMJMwCQsgmeta",
-                pool: "7dVri3qjYD3uobSZL3Zth8vSCgU6r6R2nvFsh7uVfDte",
+                name: "FRANKLIN",
+                symbol: "$FRANKLIN",
+                address: "CSrwNk6B1DwWCHRMsaoDVUfD5bBMQCJPY72ZG3Nnpump",
+                pool: "8wXzwpLjk6QJMYYC1VHueNnxRVW2nFGvQjgEnV4Mv8sY",
                 candle_interval: 15
             },
             {
@@ -759,7 +747,7 @@
                 name: "AVICI",
                 symbol: "$AVICI",
                 address: "BANKJmvhT8tiJRsBSS1n2HryMBPvT5Ze4HU95DUAmeta",
-                pool: "5gB4NPgFB3MHFHSeKN4sbaY6t9MB8ikCe9HyiKYid4Td",
+                pool: "J7z6TZgWecZughSLJ41FsttUBTjH5oX3CQ5ZmD182BpD",
                 candle_interval: 15
             },
             {
@@ -768,6 +756,13 @@
                 address: "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
                 pool: "GcbZqAaWWmCse1Q68sfd5Sh32ZuHWPugq1NYowQuc5k1",
                 candle_interval: 15
+            },
+            {
+                name: "RNUT",
+                symbol: "$RNUT",
+                address: "BkEvgC9nfhy9TpCJDPUGy9ANXbYMxosfmLzk35gqpump",
+                pool: "5XqBi4okh2obkghwc77Xs5q1pP4zQfJxpw4QRF83XGmB",
+                candle_interval: 5
             }
         ];
 
@@ -788,7 +783,6 @@
         let tokenData = {};
         let priceHistory = {};
         let alertHistory = [];
-        let charts = {};
 
         // Charger la configuration
         window.addEventListener('load', () => {
@@ -956,12 +950,11 @@
 
                 const price = data?.data?.attributes?.base_token_price_usd ? parseFloat(data.data.attributes.base_token_price_usd) : null;
                 const imageUrl = data?.included?.[0]?.attributes?.image_url || data?.data?.attributes?.image_url || null;
-                const priceChange24h = data?.data?.attributes?.price_change_percentage?.h24 || 0;
 
-                return { price, imageUrl, priceChange24h };
+                return { price, imageUrl };
             } catch (error) {
                 console.error('Erreur prix temps réel:', error);
-                return { price: null, imageUrl: null, priceChange24h: 0 };
+                return { price: null, imageUrl: null };
             }
         }
 
@@ -1012,18 +1005,25 @@
             let gains = 0;
             let losses = 0;
 
-            for (let i = prices.length - period; i < prices.length; i++) {
+            // Calculer les gains et pertes moyens sur la période
+            for (let i = 1; i <= period; i++) {
                 const change = prices[i] - prices[i - 1];
-                if (change > 0) gains += change;
-                else losses += Math.abs(change);
+                if (change > 0) {
+                    gains += change;
+                } else {
+                    losses += Math.abs(change);
+                }
             }
 
             const avgGain = gains / period;
             const avgLoss = losses / period;
 
             if (avgLoss === 0) return 100;
+
             const rs = avgGain / avgLoss;
-            return 100 - (100 / (1 + rs));
+            const rsi = 100 - (100 / (1 + rs));
+
+            return rsi;
         }
 
         // UI Updates
@@ -1041,21 +1041,21 @@
             document.getElementById('stat-breakouts').textContent = alertHistory.length;
 
             let totalVolume = 0;
-            let bestPerformer = { name: '--', change: -Infinity };
+            let bestPerformer = { name: '--', distance: -Infinity };
 
             TOKENS.forEach(token => {
                 const data = tokenData[token.name];
                 if (data) {
                     totalVolume += data.volume || 0;
-                    if (data.priceChange24h > bestPerformer.change) {
-                        bestPerformer = { name: token.symbol, change: data.priceChange24h };
+                    if (data.distance !== null && data.distance !== undefined && data.distance < bestPerformer.distance) {
+                        bestPerformer = { name: token.symbol, distance: data.distance };
                     }
                 }
             });
 
             document.getElementById('stat-total-volume').textContent = formatVolume(totalVolume);
             document.getElementById('stat-best-performer').textContent =
-                bestPerformer.name !== '--' ? `${bestPerformer.name} (+${bestPerformer.change.toFixed(2)}%)` : '--';
+                bestPerformer.name !== '--' ? `${bestPerformer.name} (${bestPerformer.distance > 0 ? '+' : ''}${bestPerformer.distance.toFixed(2)}%)` : '--';
         }
 
         function showAlert(token, info) {
@@ -1135,95 +1135,6 @@
             URL.revokeObjectURL(url);
         }
 
-        function createChart(token, candles) {
-            const ctx = document.getElementById(`chart-${token.name}`);
-            if (!ctx) return;
-
-            const labels = candles.map(c => new Date(c.timestamp * 1000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
-            const prices = candles.map(c => c.close);
-            const bands = calculateBollingerBands(prices, BOLLINGER_PERIOD, BOLLINGER_STD);
-
-            const upperBandData = new Array(candles.length).fill(bands.upper);
-            const middleBandData = new Array(candles.length).fill(bands.middle);
-            const lowerBandData = new Array(candles.length).fill(bands.lower);
-
-            if (charts[token.name]) {
-                charts[token.name].destroy();
-            }
-
-            charts[token.name] = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Prix',
-                            data: prices,
-                            borderColor: 'rgb(16, 185, 129)',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'BB Haute',
-                            data: upperBandData,
-                            borderColor: 'rgb(239, 68, 68)',
-                            borderDash: [5, 5],
-                            pointRadius: 0,
-                            fill: false
-                        },
-                        {
-                            label: 'BB Moyenne',
-                            data: middleBandData,
-                            borderColor: 'rgba(255, 255, 255, 0.5)',
-                            borderDash: [2, 2],
-                            pointRadius: 0,
-                            fill: false
-                        },
-                        {
-                            label: 'BB Basse',
-                            data: lowerBandData,
-                            borderColor: 'rgb(59, 130, 246)',
-                            borderDash: [5, 5],
-                            pointRadius: 0,
-                            fill: false
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.7)',
-                                callback: function(value) {
-                                    return formatPrice(value);
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.7)',
-                                maxTicksLimit: 6
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
         function renderTokenCards() {
             const container = document.getElementById('tokens-container');
             container.innerHTML = '';
@@ -1261,6 +1172,10 @@
                                 <div class="metric-value" id="volume-${token.name}">--</div>
                             </div>
                             <div class="metric">
+                                <div class="metric-label">Market Cap</div>
+                                <div class="metric-value" id="mcap-${token.name}">--</div>
+                            </div>
+                            <div class="metric">
                                 <div class="metric-label">RSI</div>
                                 <div class="metric-value" id="rsi-${token.name}">--</div>
                             </div>
@@ -1281,7 +1196,6 @@
                             </div>
                         </div>
                         <div class="price-display" id="price-${token.name}">--<span class="price-change" id="change-${token.name}"></span></div>
-                        ${viewMode === 'compact' ? '' : '<div class="chart-container"><canvas id="chart-' + token.name + '"></canvas></div>'}
                         <div class="metrics">
                             <div class="metric">
                                 <div class="metric-label">Bande haute</div>
@@ -1299,6 +1213,7 @@
                                 <div class="metric-label">Volume</div>
                                 <div class="metric-value" id="volume-${token.name}">--</div>
                             </div>
+                            ${viewMode === 'compact' ? '' : '<div class="metric"><div class="metric-label">Market Cap</div><div class="metric-value" id="mcap-' + token.name + '">--</div></div>'}
                             ${viewMode === 'compact' ? '' : '<div class="metric"><div class="metric-label">RSI(14)</div><div class="metric-value" id="rsi-' + token.name + '">--</div></div>'}
                         </div>
                         <div class="progress-bar">
@@ -1320,23 +1235,30 @@
             const progressEl = document.getElementById(`progress-${token.name}`);
             const changeEl = document.getElementById(`change-${token.name}`);
             const rsiEl = document.getElementById(`rsi-${token.name}`);
+            const mcapEl = document.getElementById(`mcap-${token.name}`);
 
             priceEl.textContent = formatPrice(info.current_price);
             if (upperEl) upperEl.textContent = formatPrice(info.upper_band);
             if (middleEl) middleEl.textContent = formatPrice(info.middle_band);
-            if (volumeEl) volumeEl.textContent = formatVolume(info.volume);
+            if (volumeEl) volumeEl.textContent = info.volume ? `$${info.volume.toLocaleString()} (${token.candle_interval}min)` : '--';
+            if (mcapEl) mcapEl.textContent = '--';
 
-            if (changeEl && info.priceChange24h !== undefined) {
-                const change = parseFloat(info.priceChange24h);
-                changeEl.textContent = ` ${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
-                changeEl.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
+            if (changeEl) {
+                changeEl.textContent = '';
+                changeEl.className = 'price-change';
             }
 
-            if (rsiEl && info.rsi !== undefined) {
-                rsiEl.textContent = info.rsi ? info.rsi.toFixed(2) : '--';
-                if (info.rsi) {
-                    rsiEl.style.color = info.rsi > 70 ? 'var(--danger-color)' : info.rsi < 30 ? 'var(--success-color)' : 'inherit';
+            if (rsiEl && info.rsi !== undefined && info.rsi !== null) {
+                rsiEl.textContent = info.rsi.toFixed(2);
+                if (info.rsi > 70) {
+                    rsiEl.style.color = 'var(--danger-color)';
+                } else if (info.rsi < 30) {
+                    rsiEl.style.color = 'var(--success-color)';
+                } else {
+                    rsiEl.style.color = 'inherit';
                 }
+            } else if (rsiEl) {
+                rsiEl.textContent = '--';
             }
 
             if (info.upper_band && info.current_price) {
@@ -1370,10 +1292,6 @@
                 priceEl.classList.remove('breakout-price');
             }
 
-            // Update chart if not in radar mode
-            if (viewMode !== 'radar' && viewMode !== 'compact' && candles) {
-                createChart(token, candles);
-            }
         }
 
         // Monitoring
@@ -1405,6 +1323,18 @@
                 const bands = calculateBollingerBands(closePrices, BOLLINGER_PERIOD, BOLLINGER_STD);
                 const rsi = calculateRSI(closePrices, 14);
 
+                // Debug log pour PIPPIN
+                if (token.symbol === '$PIPPIN') {
+                    console.log('🔍 DEBUG PIPPIN:', {
+                        nombreBougies: closePrices.length,
+                        derniersPrix: closePrices.slice(-5),
+                        prixActuel: currentPrice,
+                        bandeHaute: bands.upper,
+                        moyenne: bands.middle,
+                        bandeBasse: bands.lower
+                    });
+                }
+
                 // Stocker l'historique des prix
                 priceHistory[token.name].push(currentPrice);
                 if (priceHistory[token.name].length > 100) {
@@ -1417,7 +1347,6 @@
                     middle_band: bands.middle,
                     lower_band: bands.lower,
                     volume: candles[candles.length - 1].volume,
-                    priceChange24h: realtimeData.priceChange24h,
                     rsi: rsi
                 };
 
@@ -1441,7 +1370,7 @@
                         const deviation = ((currentPrice - bands.upper) / bands.upper) * 100;
                         info.deviation = deviation;
 
-                        const message = `🚨 ALERTE BOLLINGER BREAKOUT! 🚨\n\n💰 Token: ${token.symbol}\n📈 Prix: ${formatPrice(currentPrice)}\n\n📊 Bandes Bollinger (${token.candle_interval}min):\n  • Bande haute: ${formatPrice(bands.upper)}\n  • Moyenne: ${formatPrice(bands.middle)}\n  • Bande basse: ${formatPrice(bands.lower)}\n\n🔥 Deviation: +${deviation.toFixed(2)}% au-dessus\n📊 RSI: ${rsi ? rsi.toFixed(2) : 'N/A'}\n📊 Volume: ${formatVolume(info.volume)}\n\n🔗 https://gmgn.ai/sol/token/${token.address}\n\n⏰ ${formatTime(new Date())}`;
+                        const message = `🚨 ALERTE BOLLINGER BREAKOUT! 🚨\n\n💰 Token: ${token.symbol}\n📈 Prix: ${formatPrice(currentPrice)}\n\n📊 Bandes Bollinger (${token.candle_interval}min):\n  • Bande haute: ${formatPrice(bands.upper)}\n  • Moyenne: ${formatPrice(bands.middle)}\n  • Bande basse: ${formatPrice(bands.lower)}\n\n🔥 Deviation: +${deviation.toFixed(2)}% au-dessus\n\n📊 Volume: $${info.volume.toLocaleString()}\n\n🔗 https://gmgn.ai/sol/token/${token.address}\n\n⏰ ${formatTime(new Date())}`;
 
                         await sendTelegramMessage(message);
                         showAlert(token, info);
