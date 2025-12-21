@@ -1,26 +1,16 @@
-# Fichiers de configuration sensibles
+# Variables d'environnement (contient des tokens sensibles)
 .env
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-*.egg-info/
-dist/
-build/
+# Logs
+*.log
+output.log
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Node modules (si on en ajoute plus tard)
+node_modules/
 
-# OS
+# Fichiers système
 .DS_Store
 Thumbs.db
+
+# Fichiers PM2
+.pm2/
