@@ -55,9 +55,9 @@ const TOKENS = [
     }
 ];
 
-// Configuration from environment variables or defaults
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '***REDACTED***';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '1155086635';
+// Configuration from environment variables (REQUIS - pas de valeurs par défaut pour sécurité)
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
 const CHECK_FREQUENCY = parseInt(process.env.CHECK_FREQUENCY || '30'); // seconds
 const BOLLINGER_PERIOD = 20;
 const BOLLINGER_STD = 2;

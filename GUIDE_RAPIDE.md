@@ -39,8 +39,8 @@ chmod +x solana_monitor_vps.js
 sudo npm install -g pm2
 
 # Configurer les variables (utilisez vos propres valeurs!)
-export TELEGRAM_BOT_TOKEN="***REDACTED***"
-export TELEGRAM_CHAT_ID="1155086635"
+export TELEGRAM_BOT_TOKEN="VOTRE_BOT_TOKEN_ICI"
+export TELEGRAM_CHAT_ID="VOTRE_CHAT_ID_ICI"
 export CHECK_FREQUENCY="30"
 
 # Lancer le bot
@@ -108,15 +108,15 @@ const TOKENS = [
 
 ## 📱 Configuration Telegram
 
-### Vos informations actuelles:
-- **Bot Token**: `***REDACTED***`
-- **Chat ID**: `1155086635`
+### Obtenir vos identifiants:
+- **Bot Token**: Parlez à [@BotFather](https://t.me/BotFather) sur Telegram
+- **Chat ID**: Parlez à [@userinfobot](https://t.me/userinfobot) sur Telegram
 
 ### Tester le bot:
 ```bash
-curl -X POST "https://api.telegram.org/bot***REDACTED***/sendMessage" \
+curl -X POST "https://api.telegram.org/botVOTRE_BOT_TOKEN/sendMessage" \
   -H "Content-Type: application/json" \
-  -d '{"chat_id":"1155086635","text":"✅ Test VPS"}'
+  -d '{"chat_id":"VOTRE_CHAT_ID","text":"✅ Test VPS"}'
 ```
 
 ## 🏖️ Optimisations pour les vacances
