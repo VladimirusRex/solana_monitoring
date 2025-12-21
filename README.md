@@ -1,211 +1,184 @@
-# 🚀 Bot d'Alertes Bollinger pour Tokens Solana
+# 🚀 Solana Bollinger Bands Monitor
 
-Script Python qui surveille les tokens Solana et envoie des alertes Telegram quand le prix dépasse la bande de Bollinger supérieure.
+Système de surveillance 24/7 des breakouts de Bandes de Bollinger pour les tokens Solana avec alertes Telegram en temps réel.
 
-## 📋 Prérequis
+![Version](https://img.shields.io/badge/version-2.0-blue)
+![Node](https://img.shields.io/badge/node-%3E%3D14-green)
+![License](https://img.shields.io/badge/license-Private-red)
 
-- Python 3.8 ou supérieur
-- Un compte Telegram
-- Un bot Telegram (gratuit)
+## ✨ Fonctionnalités
 
-## 🔧 Installation
+- 📊 **Bandes de Bollinger** (20 périodes, 2 écarts-types)
+- 📈 **RSI (14)** pour confirmation
+- 🕐 **Bougies d'1 heure** (optimisé pour swing trading)
+- 🔔 **Alertes Telegram** instantanées
+- ⏱️ **Cooldown 15 minutes** entre alertes
+- 🖥️ **Version navigateur** avec interface graphique
+- 🌐 **Version VPS** pour monitoring 24/7
+- 📱 **Multi-tokens** simultanés
 
-1. **Cloner ou télécharger les fichiers**
+## 📁 Structure du projet
 
-2. **Installer les dépendances Python**
-```bash
-pip install -r requirements.txt
+```
+.
+├── solana_monitor_enhanced.html   # Interface web avec UI graphique
+├── solana_monitor_vps.js          # Version serveur pour VPS
+├── test_vps.js                    # Script de test rapide
+├── install_vps.sh                 # Installation automatique VPS
+├── start_vps.sh                   # Script de démarrage
+├── GUIDE_RAPIDE.md                # Guide rapide en français
+├── README_VPS.md                  # Documentation VPS complète
+└── .env.example                   # Template de configuration
 ```
 
-## 🤖 Configuration du Bot Telegram
+## 🚀 Démarrage rapide
 
-### Étape 1 : Créer un bot Telegram
-1. Ouvrez Telegram et cherchez **@BotFather**
-2. Envoyez `/newbot`
-3. Choisissez un nom pour votre bot
-4. Choisissez un username (doit finir par "bot")
-5. **Copiez le token** que BotFather vous donne (ex: `123456789:ABCdefGHIjklMNOpqrsTUVwxyz`)
+### Version navigateur (interface graphique)
 
-### Étape 2 : Obtenir votre Chat ID
-1. Cherchez **@userinfobot** sur Telegram
-2. Envoyez `/start`
-3. Le bot vous donnera votre **Chat ID** (ex: `123456789`)
+1. Ouvrez `solana_monitor_enhanced.html` dans votre navigateur
+2. Configurez vos identifiants Telegram
+3. Cliquez sur "Démarrer la surveillance"
 
-### Étape 3 : Configurer le script
-Ouvrez `solana_bollinger_alert.py` et modifiez ces lignes :
-
-```python
-TELEGRAM_BOT_TOKEN = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz"  # Votre token
-TELEGRAM_CHAT_ID = "123456789"                                 # Votre chat ID
-```
-
-## ⚙️ Configuration du Token à Surveiller
-
-### Trouver l'adresse d'un token Solana
-
-1. Allez sur [DexScreener](https://dexscreener.com/)
-2. Cherchez votre token (ex: "Bonk", "WIF", etc.)
-3. Copiez l'adresse du contrat (Contract Address)
-
-### Exemples d'adresses :
-- **Bonk**: `DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263`
-- **WIF**: `EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm`
-
-Modifiez cette ligne dans le script :
-```python
-TOKEN_ADDRESS = "ADRESSE_DU_TOKEN_ICI"
-```
-
-## 🎛️ Paramètres Personnalisables
-
-Dans le script, vous pouvez ajuster :
-
-```python
-# Paramètres des bandes de Bollinger
-BOLLINGER_PERIOD = 20  # Période pour la moyenne mobile (défaut: 20)
-BOLLINGER_STD = 2      # Écarts-types (défaut: 2)
-
-# Timeframe pour l'analyse
-TIMEFRAME = 15         # Minutes (défaut: 15)
-
-# Fréquence de vérification
-CHECK_INTERVAL = 60    # Secondes entre chaque vérification
-```
-
-### Explications :
-- **BOLLINGER_PERIOD** : Nombre de bougies pour calculer la moyenne
-- **BOLLINGER_STD** : Sensibilité des bandes (2 = standard, 3 = moins d'alertes)
-- **TIMEFRAME** : Période d'analyse (5, 15, 30 minutes...)
-- **CHECK_INTERVAL** : Fréquence de vérification (60 sec = 1 minute)
-
-## 🚀 Lancement
+### Version VPS (24/7)
 
 ```bash
-python solana_bollinger_alert.py
+# 1. Cloner le projet
+git clone <votre-repo>
+cd BotSolana
+
+# 2. Installation automatique
+./install_vps.sh
+
+# 3. Démarrer le bot
+./start_vps.sh
 ```
 
-Vous verrez :
-```
-============================================================
-🚀 SURVEILLANCE DES TOKENS SOLANA - BANDES DE BOLLINGER
-============================================================
+## 📊 Tokens actuellement surveillés
 
-📊 Configuration:
-  • Token: DezX...
-  • Timeframe: 15 minutes
-  • Période Bollinger: 20
-  • Écart-type: 2
-  • Intervalle de vérification: 60 secondes
+| Token | Symbole | Bougies | Pool |
+|-------|---------|---------|------|
+| 67 | $67 | 1h | DMAFL613... |
+| NEET | $NEET | 1h | 5wNu5Qhd... |
+| FRANKLIN | $FRANKLIN | 1h | 8wXzwpLj... |
+| WOJAK | $WOJAK | 1h | FDrY5i5k... |
+| AVICI | $AVICI | 1h | J7z6TZgW... |
+| JELLY | $JELLY | 1h | 3bC2e2Rx... |
 
-============================================================
+## 🔧 Configuration
 
-🔄 Démarrage de la surveillance...
+### Variables d'environnement
 
-[2025-01-15 14:23:45]
-Prix actuel: $0.00002341
-Bande haute: $0.00002398
-Moyenne:     $0.00002321
-Bande basse: $0.00002244
-Distance de la bande haute: 2.43%
+```bash
+export TELEGRAM_BOT_TOKEN="votre_token"
+export TELEGRAM_CHAT_ID="votre_chat_id"
+export CHECK_FREQUENCY="30"  # en secondes
 ```
 
-## 📱 Format des Alertes Telegram
+### Obtenir les identifiants Telegram
 
-Quand un breakout est détecté, vous recevrez :
+1. **Bot Token**: Parlez à [@BotFather](https://t.me/BotFather)
+2. **Chat ID**: Parlez à [@userinfobot](https://t.me/userinfobot)
+
+## 📖 Documentation
+
+- [GUIDE_RAPIDE.md](GUIDE_RAPIDE.md) - Guide rapide en français
+- [README_VPS.md](README_VPS.md) - Documentation VPS complète
+
+## 🧪 Test
+
+```bash
+# Test rapide sans alertes
+node test_vps.js
+```
+
+## 📱 Format des alertes Telegram
 
 ```
 🚨 ALERTE BOLLINGER BREAKOUT! 🚨
 
-💰 Token: BONK
-📈 Prix actuel: $0.00002456
+💰 Token: $EXEMPLE
+📈 Prix: $0.123456
 
-📊 Bandes de Bollinger (15min):
-  • Bande haute: $0.00002398
-  • Moyenne: $0.00002321
-  • Bande basse: $0.00002244
+📊 Bandes Bollinger (60min):
+  • Bande haute: $0.120000
+  • Moyenne: $0.100000
+  • Bande basse: $0.080000
 
-🔥 Déviation: +2.42% au-dessus de la bande haute
+🔥 Deviation: +2.88% au-dessus
 
-🔗 Voir sur DexScreener
-⏰ 2025-01-15 14:25:30
+📊 Volume: $123.45K
+📈 RSI(14): 75.32
+
+🔗 https://gmgn.ai/sol/token/...
+
+⏰ 21/12/2025 15:30:00
 ```
 
-## 📊 Comment fonctionnent les Bandes de Bollinger ?
+## 🛠️ Technologies
 
-Les bandes de Bollinger sont composées de :
-- **Bande supérieure** : Moyenne + (2 × écart-type)
-- **Moyenne mobile** : Moyenne des X derniers prix
-- **Bande inférieure** : Moyenne - (2 × écart-type)
+- **API**: [GeckoTerminal](https://www.geckoterminal.com/) (gratuit, sans clé)
+- **Alertes**: [Telegram Bot API](https://core.telegram.org/bots/api)
+- **Serveur**: Node.js (natif, sans dépendances npm)
+- **Gestionnaire**: PM2 (optionnel mais recommandé)
 
-**Signal haussier** : Prix > Bande supérieure = Momentum fort, potentiel de continuation ou surachat
+## 📈 Stratégie
 
-## 🔄 Utilisation avec GMGN (alternative)
+### Bandes de Bollinger
+- **Période**: 20 bougies
+- **Écarts-types**: 2σ
+- **Signal**: Prix > Bande haute = potentiel breakout
 
-Le script inclut aussi une fonction pour GMGN. Pour l'utiliser, modifiez la fonction `main()` :
+### Interprétation
+- ✅ **Breakout confirmé**: Prix > bande haute + RSI > 70
+- ⚠️ **Faux signal possible**: Prix > bande haute mais RSI < 70
+- 📉 **Pas de signal**: Prix entre les bandes
 
-```python
-# Remplacer cette ligne :
-token_data = get_dexscreener_data(TOKEN_ADDRESS)
+## 🏖️ Mode vacances
 
-# Par celle-ci :
-token_data = get_gmgn_data(TOKEN_ADDRESS)
-```
+Pour un monitoring plus tranquille:
 
-**Note** : GMGN peut avoir des limitations de taux différentes.
+1. **Augmenter le cooldown** (1h au lieu de 15min)
+2. **Ajouter filtre RSI** (seulement si RSI > 70)
+3. **Réduire fréquence** (60s au lieu de 30s)
 
-## ⚠️ Conseils Importants
+Voir [GUIDE_RAPIDE.md](GUIDE_RAPIDE.md) pour les détails.
 
-1. **Période de collecte** : Le script a besoin de collecter au moins 20 prix avant de pouvoir calculer les bandes de Bollinger
-   
-2. **Cooldown** : Par défaut, 5 minutes entre chaque alerte pour éviter le spam
+## ⚠️ Avertissements
 
-3. **Surveillance continue** : Laissez le script tourner en continu pour une surveillance 24/7
+- Les breakouts ne garantissent **pas** une hausse continue
+- Utilisez avec votre propre stratégie de trading
+- Testez toujours avant de trader réellement
+- Ne tradez que ce que vous pouvez vous permettre de perdre
 
-4. **VPS recommandé** : Pour une surveillance permanente, utilisez un VPS ou serveur cloud
+## 🤝 Contribution
 
-## 🛠️ Lancer en arrière-plan (Linux/Mac)
+Projet personnel - Utilisation privée uniquement
 
+## 📝 Changelog
+
+### v2.0 (2025-12-21)
+- ✅ Passage aux bougies d'1 heure
+- ✅ Version VPS pour monitoring 24/7
+- ✅ Scripts d'installation automatique
+- ✅ Support multi-tokens amélioré
+
+### v1.0 (2025-12-20)
+- ✅ Version initiale avec bougies 15min
+- ✅ Interface web graphique
+- ✅ Alertes Telegram
+
+## 📞 Support
+
+Consultez les logs:
 ```bash
-# Avec nohup
-nohup python solana_bollinger_alert.py > output.log 2>&1 &
-
-# Avec screen
-screen -S bollinger
-python solana_bollinger_alert.py
-# Ctrl+A puis D pour détacher
+pm2 logs solana-bb
 ```
 
-## 🐛 Dépannage
-
-### "Erreur lors de la récupération des données"
-- Vérifiez votre connexion internet
-- L'adresse du token est peut-être incorrecte
-- L'API peut être temporairement indisponible
-
-### "Erreur lors de l'envoi du message Telegram"
-- Vérifiez votre token et chat_id
-- Assurez-vous d'avoir démarré une conversation avec votre bot
-- Envoyez `/start` à votre bot sur Telegram
-
-### Les bandes ne s'affichent pas
-- Le script collecte encore des données (attendez 20 vérifications minimum)
-
-## 📈 Améliorations Possibles
-
-- Surveiller plusieurs tokens simultanément
-- Ajouter des alertes pour la bande inférieure (signal baissier)
-- Intégrer d'autres indicateurs (RSI, MACD)
-- Ajouter des graphiques
-- Enregistrer l'historique dans une base de données
-
-## ⚖️ Disclaimer
-
-Ce script est fourni à titre éducatif. Le trading de crypto-monnaies comporte des risques. Ne tradez que ce que vous pouvez vous permettre de perdre.
-
-## 📝 License
-
-MIT - Libre d'utilisation et de modification
+Vérifiez l'API:
+```bash
+node test_vps.js
+```
 
 ---
 
-**Bon trading ! 🚀📈**
+**Bon monitoring! 📊🚀**
