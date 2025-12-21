@@ -720,49 +720,42 @@
                 symbol: "$67",
                 address: "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump",
                 pool: "DMAFL613XTipuA3jFNYczavWT7XsiYf9cR3qmRMZQhB6",
-                candle_interval: 15
+                candle_interval: 60
             },
             {
-                name: "PIPPIN",
-                symbol: "$PIPPIN",
-                address: "Dfh5DzRgSvvCFDoYc2ciTkMrbDfRKybA4SoFbPmApump",
-                pool: "8WwcNqdZjCY5Pt7AkhupAFknV2txca9sq6YBkGzLbvdt",
-                candle_interval: 15
+                name: "NEET",
+                symbol: "$NEET",
+                address: "Ce2gx9KGXJ6C9Mp5b5x1sn9Mg87JwEbrQby4Zqo3pump",
+                pool: "5wNu5QhdpRGrL37ffcd6TMMqZugQgxwafgz477rShtHy",
+                candle_interval: 60
             },
             {
                 name: "FRANKLIN",
                 symbol: "$FRANKLIN",
                 address: "CSrwNk6B1DwWCHRMsaoDVUfD5bBMQCJPY72ZG3Nnpump",
                 pool: "8wXzwpLjk6QJMYYC1VHueNnxRVW2nFGvQjgEnV4Mv8sY",
-                candle_interval: 15
+                candle_interval: 60
             },
             {
                 name: "WOJAK",
                 symbol: "$WOJAK",
                 address: "8J69rbLTzWWgUJziFY8jeu5tDwEPBwUz4pKBMr5rpump",
                 pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7",
-                candle_interval: 15
+                candle_interval: 60
             },
             {
                 name: "AVICI",
                 symbol: "$AVICI",
                 address: "BANKJmvhT8tiJRsBSS1n2HryMBPvT5Ze4HU95DUAmeta",
                 pool: "J7z6TZgWecZughSLJ41FsttUBTjH5oX3CQ5ZmD182BpD",
-                candle_interval: 15
+                candle_interval: 60
             },
             {
-                name: "SPSC",
-                symbol: "$SPSC",
-                address: "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
-                pool: "GcbZqAaWWmCse1Q68sfd5Sh32ZuHWPugq1NYowQuc5k1",
-                candle_interval: 15
-            },
-            {
-                name: "RNUT",
-                symbol: "$RNUT",
-                address: "BkEvgC9nfhy9TpCJDPUGy9ANXbYMxosfmLzk35gqpump",
-                pool: "5XqBi4okh2obkghwc77Xs5q1pP4zQfJxpw4QRF83XGmB",
-                candle_interval: 5
+                name: "JELLYJELLY",
+                symbol: "$JELLY",
+                address: "FeR8VBqNRSUD5NtXAj2n3j1dAHkZHfyDktKuLXD4pump",
+                pool: "3bC2e2RxcfvF9oP22LvbaNsVwoS2T98q6ErCRoayQYdq",
+                candle_interval: 60
             }
         ];
 
@@ -904,9 +897,13 @@
         // API Functions
         async function getGeckoTerminalOHLCV(poolAddress, aggregate = 15, limit = 25) {
             try {
-                const url = `https://api.geckoterminal.com/api/v2/networks/solana/pools/${poolAddress}/ohlcv/minute`;
+                // Utiliser l'endpoint /hour pour les bougies de 60 minutes, sinon /minute
+                const endpoint = aggregate >= 60 ? 'hour' : 'minute';
+                const actualAggregate = aggregate >= 60 ? 1 : aggregate;
+
+                const url = `https://api.geckoterminal.com/api/v2/networks/solana/pools/${poolAddress}/ohlcv/${endpoint}`;
                 const params = new URLSearchParams({
-                    aggregate: aggregate,
+                    aggregate: actualAggregate,
                     limit: limit,
                     currency: 'usd'
                 });
@@ -1323,9 +1320,9 @@
                 const bands = calculateBollingerBands(closePrices, BOLLINGER_PERIOD, BOLLINGER_STD);
                 const rsi = calculateRSI(closePrices, 14);
 
-                // Debug log pour PIPPIN
-                if (token.symbol === '$PIPPIN') {
-                    console.log('🔍 DEBUG PIPPIN:', {
+                // Debug log pour NEET
+                if (token.symbol === '$NEET') {
+                    console.log('🔍 DEBUG NEET:', {
                         nombreBougies: closePrices.length,
                         derniersPrix: closePrices.slice(-5),
                         prixActuel: currentPrice,
