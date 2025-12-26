@@ -12,34 +12,6 @@ const https = require('https');
 
 const TOKENS = [
     {
-        name: "67",
-        symbol: "$67",
-        address: "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump",
-        pool: "DMAFL613XTipuA3jFNYczavWT7XsiYf9cR3qmRMZQhB6",
-        candle_interval: 60
-    },
-    {
-        name: "NEET",
-        symbol: "$NEET",
-        address: "Ce2gx9KGXJ6C9Mp5b5x1sn9Mg87JwEbrQby4Zqo3pump",
-        pool: "5wNu5QhdpRGrL37ffcd6TMMqZugQgxwafgz477rShtHy",
-        candle_interval: 60
-    },
-    {
-        name: "FRANKLIN",
-        symbol: "$FRANKLIN",
-        address: "CSrwNk6B1DwWCHRMsaoDVUfD5bBMQCJPY72ZG3Nnpump",
-        pool: "8wXzwpLjk6QJMYYC1VHueNnxRVW2nFGvQjgEnV4Mv8sY",
-        candle_interval: 60
-    },
-    {
-        name: "WOJAK",
-        symbol: "$WOJAK",
-        address: "8J69rbLTzWWgUJziFY8jeu5tDwEPBwUz4pKBMr5rpump",
-        pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7",
-        candle_interval: 60
-    },
-    {
         name: "AVICI",
         symbol: "$AVICI",
         address: "BANKJmvhT8tiJRsBSS1n2HryMBPvT5Ze4HU95DUAmeta",
@@ -51,6 +23,34 @@ const TOKENS = [
         symbol: "$JELLY",
         address: "FeR8VBqNRSUD5NtXAj2n3j1dAHkZHfyDktKuLXD4pump",
         pool: "3bC2e2RxcfvF9oP22LvbaNsVwoS2T98q6ErCRoayQYdq",
+        candle_interval: 60
+    },
+    {
+        name: "NEET",
+        symbol: "$NEET",
+        address: "Ce2gx9KGXJ6C9Mp5b5x1sn9Mg87JwEbrQby4Zqo3pump",
+        pool: "5wNu5QhdpRGrL37ffcd6TMMqZugQgxwafgz477rShtHy",
+        candle_interval: 60
+    },
+    {
+        name: "WET",
+        symbol: "$WET",
+        address: "WETZjtprkDMCcUxPi9PfWnowMRZkiGGHDb9rABuRZ2U",
+        pool: "CgyddEf8geWjwUSQLkaDr5EKsmtusoF4bWQVm1CbetEX",
+        candle_interval: 60
+    },
+    {
+        name: "WOJAK",
+        symbol: "$WOJAK",
+        address: "8J69rbLTzWWgUJziFY8jeu5tDwEPBwUz4pKBMr5rpump",
+        pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7",
+        candle_interval: 60
+    },
+    {
+        name: "67",
+        symbol: "$67",
+        address: "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump",
+        pool: "DMAFL613XTipuA3jFNYczavWT7XsiYf9cR3qmRMZQhB6",
         candle_interval: 60
     }
 ];
