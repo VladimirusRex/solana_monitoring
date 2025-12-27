@@ -9,12 +9,12 @@ const https = require('https');
 
 // Configuration
 const TOKENS = [
-    { name: "$AVICI", pool: "J7z6TZgWecZughSLJ41FsttUBTjH5oX3CQ5ZmD182BpD", candle_interval: 60 },
-    { name: "$JELLY", pool: "3bC2e2RxcfvF9oP22LvbaNsVwoS2T98q6ErCRoayQYdq", candle_interval: 60 },
-    { name: "$NEET", pool: "5wNu5QhdpRGrL37ffcd6TMMqZugQgxwafgz477rShtHy", candle_interval: 60 },
-    { name: "$WET", pool: "CgyddEf8geWjwUSQLkaDr5EKsmtusoF4bWQVm1CbetEX", candle_interval: 60 },
-    { name: "$WOJAK", pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7", candle_interval: 60 },
-    { name: "$67", pool: "DMAFL613XTipuA3jFNYczavWT7XsiYf9cR3qmRMZQhB6", candle_interval: 60 }
+    { name: "$67", pool: "DMAFL613XTipuA3jFNYczavWT7XsiYf9cR3qmRMZQhB6", candle_interval: 15 },
+    { name: "$CARDS", pool: "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD", candle_interval: 15 },
+    { name: "$SPSC", pool: "6MHj1z5BgC1UiTNEWrnJfbGtQPuPdh2qgdWkemGxT2c5", candle_interval: 15 },
+    { name: "$SNOWBALL", pool: "4KfHWqcSJWsrTq19FLzFYm3cGN4oASAj7ZCiUoFx16KS", candle_interval: 15 },
+    { name: "$FKH", pool: "8Lq7gz2aEzkMQNfLpYmjv3V8JbD26LRbFd11SnRicCE6", candle_interval: 15 },
+    { name: "$WHITEWHALE", pool: "4qxSqMh6iEdbdvtMp8r5MK2psAGKNk57PfGeVo2VhczQ", candle_interval: 15 }
 ];
 
 const BOLLINGER_PERIOD = 20;
