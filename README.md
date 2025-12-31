@@ -26,12 +26,12 @@ Bot de surveillance 24/7 des tokens Solana avec stratégie Bollinger Bands et al
 
 | Token | Symbole | Bougies |
 |-------|---------|---------|
-| 67 | $67 | 15min |
-| CARDS | $CARDS | 15min |
-| SPSC | $SPSC | 15min |
-| SNOWBALL | $SNOWBALL | 15min |
-| FKH | $FKH | 15min |
-| WHITEWHALE | $WHITEWHALE | 15min |
+| snowball | $SNOWBALL | 15min |
+| 1 coin can change your life | $1 | 15min |
+| Shit Piss Skin Can | $SPSC | 15min |
+| Flying Ketamine Horse | $FKH | 15min |
+| The White Whale | $WHITEWHALE | 15min |
+| Wojak | $WOJAK | 15min |
 
 ## 🚀 Utilisation
 

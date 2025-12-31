@@ -12,17 +12,17 @@ const https = require('https');
 
 const TOKENS = [
     {
-        name: "67",
-        symbol: "$67",
-        address: "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump",
-        pool: "DMAFL613XTipuA3jFNYczavWT7XsiYf9cR3qmRMZQhB6",
+        name: "SNOWBALL",
+        symbol: "$SNOWBALL",
+        address: "Gbu7JAKhTVtGyRryg8cYPiKNhonXpUqbrZuCDjfUpump",
+        pool: "4KfHWqcSJWsrTq19FLzFYm3cGN4oASAj7ZCiUoFx16KS",
         candle_interval: 15
     },
     {
-        name: "CARDS",
-        symbol: "$CARDS",
-        address: "CARDSccUMFKoPRZxt5vt3ksUbxEFEcnZ3H2pd3dKxYjp",
-        pool: "HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD",
+        name: "1 coin",
+        symbol: "$1",
+        address: "GMvCfcZg8YvkkQmwDaAzCtHDrrEtgE74nQpQ7xNabonk",
+        pool: "6sEkZ73vph5AFYmQTzaV6H5vAQQLZ2C8WqeCQ6MhLqFk",
         candle_interval: 15
     },
     {
@@ -30,13 +30,6 @@ const TOKENS = [
         symbol: "$SPSC",
         address: "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
         pool: "6MHj1z5BgC1UiTNEWrnJfbGtQPuPdh2qgdWkemGxT2c5",
-        candle_interval: 15
-    },
-    {
-        name: "SNOWBALL",
-        symbol: "$SNOWBALL",
-        address: "Gbu7JAKhTVtGyRryg8cYPiKNhonXpUqbrZuCDjfUpump",
-        pool: "4KfHWqcSJWsrTq19FLzFYm3cGN4oASAj7ZCiUoFx16KS",
         candle_interval: 15
     },
     {
@@ -51,6 +44,13 @@ const TOKENS = [
         symbol: "$WHITEWHALE",
         address: "a3W4qutoEJA4232T2gwZUfgYJTetr96pU4SJMwppump",
         pool: "4qxSqMh6iEdbdvtMp8r5MK2psAGKNk57PfGeVo2VhczQ",
+        candle_interval: 15
+    },
+    {
+        name: "WOJAK",
+        symbol: "$WOJAK",
+        address: "8J69rbLTzWWgUJziFY8jeu5tDwEPBwUz4pKBMr5rpump",
+        pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7",
         candle_interval: 15
     }
 ];
