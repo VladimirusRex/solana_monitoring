@@ -26,7 +26,7 @@ Bot de surveillance 24/7 des tokens Solana avec stratégie Bollinger Bands et al
 
 | Token | Symbole | Bougies |
 |-------|---------|---------|
-| snowball | $SNOWBALL | 15min |
+| You'll own nothing & be happy | $NOTHING | 15min |
 | 1 coin can change your life | $1 | 15min |
 | Shit Piss Skin Can | $SPSC | 15min |
 | Flying Ketamine Horse | $FKH | 15min |
