@@ -12,10 +12,10 @@ const https = require('https');
 
 const TOKENS = [
     {
-        name: "SNOWBALL",
-        symbol: "$SNOWBALL",
-        address: "Gbu7JAKhTVtGyRryg8cYPiKNhonXpUqbrZuCDjfUpump",
-        pool: "4KfHWqcSJWsrTq19FLzFYm3cGN4oASAj7ZCiUoFx16KS",
+        name: "NOTHING",
+        symbol: "$NOTHING",
+        address: "F7pB3ZdfBnyFw2LRHydWEn9BmhEa5XihXLjhySFRpump",
+        pool: "2pA1GMh9WbPtURmr6Rt5oxNs6RdpLzxJphSJQcdyaNFq",
         candle_interval: 15
     },
     {

@@ -9,7 +9,7 @@ const https = require('https');
 
 // Configuration
 const TOKENS = [
-    { name: "$SNOWBALL", pool: "4KfHWqcSJWsrTq19FLzFYm3cGN4oASAj7ZCiUoFx16KS", candle_interval: 15 },
+    { name: "$NOTHING", pool: "2pA1GMh9WbPtURmr6Rt5oxNs6RdpLzxJphSJQcdyaNFq", candle_interval: 15 },
     { name: "$1", pool: "6sEkZ73vph5AFYmQTzaV6H5vAQQLZ2C8WqeCQ6MhLqFk", candle_interval: 15 },
     { name: "$SPSC", pool: "6MHj1z5BgC1UiTNEWrnJfbGtQPuPdh2qgdWkemGxT2c5", candle_interval: 15 },
     { name: "$FKH", pool: "8Lq7gz2aEzkMQNfLpYmjv3V8JbD26LRbFd11SnRicCE6", candle_interval: 15 },
