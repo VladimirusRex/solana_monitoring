@@ -32,7 +32,6 @@ Bot de surveillance 24/7 des tokens Solana avec stratégie Bollinger Bands et al
 | Flying Ketamine Horse | $FKH | 15min |
 | TROLL | $TROLL | 15min |
 | Wojak | $WOJAK | 15min |
-| Trump el Libertador | $Libertador | 15min |
 
 ## 🚀 Utilisation
 

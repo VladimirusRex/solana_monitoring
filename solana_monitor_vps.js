@@ -52,13 +52,6 @@ const TOKENS = [
         address: "8J69rbLTzWWgUJziFY8jeu5tDwEPBwUz4pKBMr5rpump",
         pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7",
         candle_interval: 15
-    },
-    {
-        name: "Libertador",
-        symbol: "$Libertador",
-        address: "pQdcPrjqcakGH5MmdxqRgGegmiLd9wYyxDeTxmMbonk",
-        pool: "7Z93mgwKcbpLnsHxpt6HmjbRrVBLsJ7VQFApHdngocHb",
-        candle_interval: 15
     }
 ];
 
