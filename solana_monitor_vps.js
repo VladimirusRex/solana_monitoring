@@ -40,10 +40,10 @@ const TOKENS = [
         candle_interval: 15
     },
     {
-        name: "WHITEWHALE",
-        symbol: "$WHITEWHALE",
-        address: "a3W4qutoEJA4232T2gwZUfgYJTetr96pU4SJMwppump",
-        pool: "4qxSqMh6iEdbdvtMp8r5MK2psAGKNk57PfGeVo2VhczQ",
+        name: "TROLL",
+        symbol: "$TROLL",
+        address: "5UUH9RTDiSpq6HKS6bp4NdU9PNJpXRXuiw6ShBTBhgH2",
+        pool: "4w2cysotX6czaUGmmWg13hDpY4QEMG2CzeKYEQyK9Ama",
         candle_interval: 15
     },
     {
