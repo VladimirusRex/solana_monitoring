@@ -14,8 +14,7 @@ const TOKENS = [
     { name: "$SPSC", pool: "6MHj1z5BgC1UiTNEWrnJfbGtQPuPdh2qgdWkemGxT2c5", candle_interval: 15 },
     { name: "$FKH", pool: "8Lq7gz2aEzkMQNfLpYmjv3V8JbD26LRbFd11SnRicCE6", candle_interval: 15 },
     { name: "$TROLL", pool: "4w2cysotX6czaUGmmWg13hDpY4QEMG2CzeKYEQyK9Ama", candle_interval: 15 },
-    { name: "$WOJAK", pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7", candle_interval: 15 },
-    { name: "$Libertador", pool: "7Z93mgwKcbpLnsHxpt6HmjbRrVBLsJ7VQFApHdngocHb", candle_interval: 15 }
+    { name: "$WOJAK", pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7", candle_interval: 15 }
 ];
 
 const BOLLINGER_PERIOD = 20;
