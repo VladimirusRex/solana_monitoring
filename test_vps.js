@@ -13,7 +13,7 @@ const TOKENS = [
     { name: "$1", pool: "6sEkZ73vph5AFYmQTzaV6H5vAQQLZ2C8WqeCQ6MhLqFk", candle_interval: 15 },
     { name: "$SPSC", pool: "6MHj1z5BgC1UiTNEWrnJfbGtQPuPdh2qgdWkemGxT2c5", candle_interval: 15 },
     { name: "$FKH", pool: "8Lq7gz2aEzkMQNfLpYmjv3V8JbD26LRbFd11SnRicCE6", candle_interval: 15 },
-    { name: "$TROLL", pool: "4w2cysotX6czaUGmmWg13hDpY4QEMG2CzeKYEQyK9Ama", candle_interval: 15 },
+    { name: "$67", pool: "DMAFL613XTipuA3jFNYczavWT7XsiYf9cR3qmRMZQhB6", candle_interval: 15 },
     { name: "$WOJAK", pool: "FDrY5i5kuadZ1ik8gPS26qjj9Rw9mpufXMegGC2HNSP7", candle_interval: 15 }
 ];
 
