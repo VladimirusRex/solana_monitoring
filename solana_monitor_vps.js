@@ -1,9 +1,16 @@
 #!/usr/bin/env node
 
 /**
- * Solana Bollinger Bands Monitor - VPS Edition
+ * Solana Bollinger Bands Monitor - VPS Edition v2.0
  * Monitors Solana tokens for Bollinger Band breakouts and sends Telegram alerts
  * Designed for 24/7 operation on a VPS
+ *
+ * Améliorations v2.0:
+ * - Requêtes API en parallèle (plus rapide)
+ * - Messages Telegram améliorés avec graphique ASCII
+ * - Variation 24h dans les alertes
+ * - Liens vers DexScreener et GeckoTerminal
+ * - Rapport de statut toutes les heures
  */
 
 const https = require('https');
@@ -55,19 +62,22 @@ const TOKENS = [
     }
 ];
 
-// Configuration from environment variables (REQUIS - pas de valeurs par défaut pour sécurité)
+// Configuration from environment variables
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
 const CHECK_FREQUENCY = parseInt(process.env.CHECK_FREQUENCY || '30'); // seconds
 const BOLLINGER_PERIOD = 20;
 const BOLLINGER_STD = 2;
 const ALERT_COOLDOWN = 900000; // 15 minutes in milliseconds
+const STATUS_INTERVAL = 3600000; // 1 heure en millisecondes
 
 // ==================== STATE ====================
 
 let checkCount = 0;
 let alertCount = 0;
 let lastAlertTimes = {};
+let lastStatusTime = Date.now();
+let tokenStats = {}; // Pour tracker les stats par token
 
 // ==================== UTILITY FUNCTIONS ====================
 
@@ -91,6 +101,36 @@ function formatVolume(volume) {
     return `$${volume.toFixed(0)}`;
 }
 
+function formatPercent(value) {
+    if (value === null || value === undefined) return 'N/A';
+    const sign = value >= 0 ? '+' : '';
+    return `${sign}${value.toFixed(2)}%`;
+}
+
+// Génère un mini graphique ASCII pour visualiser la position du prix
+function generatePriceBar(currentPrice, lower, middle, upper) {
+    const totalWidth = 20;
+    const range = upper - lower;
+    if (range === 0) return '|' + '─'.repeat(totalWidth) + '|';
+
+    const pricePosition = Math.max(0, Math.min(1, (currentPrice - lower) / range));
+    const middlePosition = (middle - lower) / range;
+
+    const priceIndex = Math.floor(pricePosition * totalWidth);
+    const middleIndex = Math.floor(middlePosition * totalWidth);
+
+    let bar = '';
+    for (let i = 0; i <= totalWidth; i++) {
+        if (i === 0) bar += '▕';
+        else if (i === totalWidth) bar += '▏';
+        else if (i === priceIndex) bar += '●';
+        else if (i === middleIndex) bar += '│';
+        else bar += '─';
+    }
+
+    return bar;
+}
+
 // ==================== HTTP REQUEST HELPER ====================
 
 function httpsRequest(url, options = {}) {
@@ -101,7 +141,8 @@ function httpsRequest(url, options = {}) {
             port: urlObj.port || 443,
             path: urlObj.pathname + urlObj.search,
             method: options.method || 'GET',
-            headers: options.headers || {}
+            headers: options.headers || {},
+            timeout: 10000
         };
 
         const req = https.request(requestOptions, (res) => {
@@ -121,6 +162,10 @@ function httpsRequest(url, options = {}) {
         });
 
         req.on('error', reject);
+        req.on('timeout', () => {
+            req.destroy();
+            reject(new Error('Timeout'));
+        });
 
         if (options.body) {
             req.write(options.body);
@@ -134,7 +179,6 @@ function httpsRequest(url, options = {}) {
 
 async function getGeckoTerminalOHLCV(poolAddress, aggregate = 60, limit = 25) {
     try {
-        // Utiliser l'endpoint /hour pour les bougies de 60 minutes, sinon /minute
         const endpoint = aggregate >= 60 ? 'hour' : 'minute';
         const actualAggregate = aggregate >= 60 ? 1 : aggregate;
 
@@ -156,23 +200,42 @@ async function getGeckoTerminalOHLCV(poolAddress, aggregate = 60, limit = 25) {
 
         return null;
     } catch (error) {
-        log(`❌ Erreur GeckoTerminal OHLCV: ${error.message}`);
         return null;
     }
 }
 
-async function getGeckoTerminalRealtimePrice(poolAddress) {
+async function getGeckoTerminalPoolData(poolAddress) {
     try {
         const url = `https://api.geckoterminal.com/api/v2/networks/solana/pools/${poolAddress}?include=base_token`;
         const data = await httpsRequest(url, {
             headers: { 'Accept': 'application/json' }
         });
 
-        const price = data?.data?.attributes?.base_token_price_usd ? parseFloat(data.data.attributes.base_token_price_usd) : null;
-        return { price };
+        const attrs = data?.data?.attributes;
+        if (!attrs) return null;
+
+        return {
+            price: attrs.base_token_price_usd ? parseFloat(attrs.base_token_price_usd) : null,
+            priceChange24h: attrs.price_change_percentage?.h24 ? parseFloat(attrs.price_change_percentage.h24) : null,
+            volume24h: attrs.volume_usd?.h24 ? parseFloat(attrs.volume_usd.h24) : null,
+            txCount24h: attrs.transactions?.h24 ? (attrs.transactions.h24.buys + attrs.transactions.h24.sells) : null
+        };
     } catch (error) {
-        log(`❌ Erreur prix temps réel: ${error.message}`);
-        return { price: null };
+        return null;
+    }
+}
+
+// Récupérer toutes les données d'un token en parallèle
+async function getTokenData(token) {
+    try {
+        const [poolData, candles] = await Promise.all([
+            getGeckoTerminalPoolData(token.pool),
+            getGeckoTerminalOHLCV(token.pool, token.candle_interval, 25)
+        ]);
+
+        return { poolData, candles };
+    } catch (error) {
+        return { poolData: null, candles: null };
     }
 }
 
@@ -187,7 +250,8 @@ async function sendTelegramMessage(message) {
         const body = JSON.stringify({
             chat_id: TELEGRAM_CHAT_ID,
             text: message,
-            parse_mode: 'HTML'
+            parse_mode: 'HTML',
+            disable_web_page_preview: true
         });
 
         await httpsRequest(url, {
@@ -253,29 +317,40 @@ function calculateRSI(prices, period = 14) {
 
 async function checkToken(token) {
     try {
-        const realtimeData = await getGeckoTerminalRealtimePrice(token.pool);
-        const candles = await getGeckoTerminalOHLCV(token.pool, token.candle_interval, 25);
+        const { poolData, candles } = await getTokenData(token);
 
         if (!candles || candles.length < BOLLINGER_PERIOD) {
-            log(`❌ ${token.symbol}: Données insuffisantes (${candles ? candles.length : 0}/${BOLLINGER_PERIOD})`);
-            return;
+            log(`❌ ${token.symbol}: Données insuffisantes`);
+            return null;
         }
 
         const closePrices = candles.map(c => c.close);
-        const currentPrice = realtimeData.price || closePrices[closePrices.length - 1];
+        const currentPrice = poolData?.price || closePrices[closePrices.length - 1];
         const bands = calculateBollingerBands(closePrices, BOLLINGER_PERIOD, BOLLINGER_STD);
         const rsi = calculateRSI(closePrices, 14);
 
-        if (!bands.upper || !bands.middle || !bands.lower) {
-            log(`❌ ${token.symbol}: Impossible de calculer les bandes de Bollinger`);
-            return;
+        if (!bands.upper) {
+            log(`❌ ${token.symbol}: Impossible de calculer les bandes`);
+            return null;
         }
 
         const distance = ((bands.upper - currentPrice) / currentPrice * 100);
         const volume = candles[candles.length - 1].volume;
+        const priceChange24h = poolData?.priceChange24h;
+        const volume24h = poolData?.volume24h;
+
+        // Sauvegarder les stats
+        tokenStats[token.symbol] = {
+            price: currentPrice,
+            distance,
+            rsi,
+            priceChange24h,
+            isBreakout: currentPrice >= bands.upper
+        };
 
         // Log current status
-        log(`✅ ${token.symbol}: ${formatPrice(currentPrice)} | Distance: ${distance.toFixed(2)}% | RSI: ${rsi ? rsi.toFixed(2) : 'N/A'} | Vol: ${formatVolume(volume)}`);
+        const changeStr = priceChange24h !== null ? ` | 24h: ${formatPercent(priceChange24h)}` : '';
+        log(`✅ ${token.symbol}: ${formatPrice(currentPrice)} | Dist: ${distance.toFixed(1)}% | RSI: ${rsi ? rsi.toFixed(0) : 'N/A'}${changeStr}`);
 
         // Check for breakout
         if (currentPrice >= bands.upper) {
@@ -287,82 +362,188 @@ async function checkToken(token) {
                 alertCount++;
 
                 const deviation = ((currentPrice - bands.upper) / bands.upper) * 100;
+                const priceBar = generatePriceBar(currentPrice, bands.lower, bands.middle, bands.upper);
 
-                const message = `🚨 ALERTE BOLLINGER BREAKOUT! 🚨\n\n💰 Token: ${token.symbol}\n📈 Prix: ${formatPrice(currentPrice)}\n\n📊 Bandes Bollinger (${token.candle_interval}min):\n  • Bande haute: ${formatPrice(bands.upper)}\n  • Moyenne: ${formatPrice(bands.middle)}\n  • Bande basse: ${formatPrice(bands.lower)}\n\n🔥 Deviation: +${deviation.toFixed(2)}% au-dessus\n\n📊 Volume: ${formatVolume(volume)}\n📈 RSI(14): ${rsi ? rsi.toFixed(2) : 'N/A'}\n\n🔗 https://gmgn.ai/sol/token/${token.address}\n\n⏰ ${new Date().toLocaleString('fr-FR')}`;
+                // Message Telegram amélioré
+                const message =
+`🚨 <b>BREAKOUT BOLLINGER</b> 🚨
+
+━━━━━━━━━━━━━━━━━━━━
+
+💎 <b>${token.symbol}</b>
+💰 Prix: <b>${formatPrice(currentPrice)}</b>
+${priceChange24h !== null ? `📊 24h: <b>${formatPercent(priceChange24h)}</b>` : ''}
+
+━━━━━━━━━━━━━━━━━━━━
+
+📈 <b>Bandes Bollinger (${token.candle_interval}min)</b>
+
+<code>${priceBar}</code>
+<code>▕ Bas      │Mid      Haut▏</code>
+
+🔺 Haute:  ${formatPrice(bands.upper)}
+➖ Moyenne: ${formatPrice(bands.middle)}
+🔻 Basse:  ${formatPrice(bands.lower)}
+
+🔥 <b>+${deviation.toFixed(2)}%</b> au-dessus
+
+━━━━━━━━━━━━━━━━━━━━
+
+📊 RSI(14): <b>${rsi ? rsi.toFixed(1) : 'N/A'}</b> ${rsi > 70 ? '🔴 Surachat' : rsi > 50 ? '🟡 Neutre' : '🟢 Survente'}
+💹 Volume 24h: <b>${formatVolume(volume24h)}</b>
+
+━━━━━━━━━━━━━━━━━━━━
+
+🔗 <a href="https://dexscreener.com/solana/${token.address}">DexScreener</a> | <a href="https://www.geckoterminal.com/solana/pools/${token.pool}">GeckoTerminal</a>
+
+⏰ ${new Date().toLocaleString('fr-FR')}`;
 
                 await sendTelegramMessage(message);
-                log(`🚨 BREAKOUT ${token.symbol} - Alerte envoyée! (Deviation: +${deviation.toFixed(2)}%)`);
+                log(`🚨 BREAKOUT ${token.symbol} - Alerte envoyée!`);
             } else {
                 const minutesRemaining = Math.ceil((ALERT_COOLDOWN - timeSinceLastAlert) / 60000);
-                log(`⏳ ${token.symbol}: En cooldown (${minutesRemaining} min restantes)`);
+                log(`⏳ ${token.symbol}: Cooldown (${minutesRemaining}min)`);
             }
         }
 
+        return { token, currentPrice, bands, rsi, priceChange24h };
+
     } catch (error) {
-        log(`❌ Erreur pour ${token.symbol}: ${error.message}`);
+        log(`❌ Erreur ${token.symbol}: ${error.message}`);
+        return null;
     }
 }
 
 async function performCheck() {
     checkCount++;
-    log(`\n🔄 ========== VÉRIFICATION #${checkCount} (${new Date().toLocaleString('fr-FR')}) ==========`);
+    const startTime = Date.now();
+    log(`\n🔄 ═══ VÉRIFICATION #${checkCount} ═══`);
 
-    for (const token of TOKENS) {
-        await checkToken(token);
-        // Small delay between tokens to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 1000));
+    // Vérifier tous les tokens en parallèle (par groupes de 3 pour éviter le rate limiting)
+    const results = [];
+    for (let i = 0; i < TOKENS.length; i += 3) {
+        const batch = TOKENS.slice(i, i + 3);
+        const batchResults = await Promise.all(batch.map(token => checkToken(token)));
+        results.push(...batchResults);
+        if (i + 3 < TOKENS.length) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
     }
 
-    log(`✅ Vérification terminée. Prochaine vérification dans ${CHECK_FREQUENCY} secondes.`);
-    log(`📊 Statistiques: ${checkCount} checks | ${alertCount} alertes envoyées\n`);
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    log(`✅ Terminé en ${elapsed}s | Prochain check: ${CHECK_FREQUENCY}s`);
+
+    // Envoyer rapport de statut toutes les heures
+    if (Date.now() - lastStatusTime >= STATUS_INTERVAL) {
+        await sendStatusReport();
+        lastStatusTime = Date.now();
+    }
+}
+
+async function sendStatusReport() {
+    const breakouts = Object.entries(tokenStats).filter(([_, s]) => s.isBreakout);
+    const topMover = Object.entries(tokenStats)
+        .filter(([_, s]) => s.priceChange24h !== null)
+        .sort((a, b) => (b[1].priceChange24h || 0) - (a[1].priceChange24h || 0))[0];
+
+    let statusMessage =
+`📊 <b>RAPPORT HORAIRE</b> 📊
+
+━━━━━━━━━━━━━━━━━━━━
+
+⏱️ Uptime: <b>${checkCount}</b> vérifications
+🚨 Alertes envoyées: <b>${alertCount}</b>
+
+━━━━━━━━━━━━━━━━━━━━
+
+<b>État des tokens:</b>
+`;
+
+    for (const [symbol, stats] of Object.entries(tokenStats)) {
+        const emoji = stats.isBreakout ? '🔥' : (stats.distance < 5 ? '👀' : '✅');
+        const change = stats.priceChange24h !== null ? ` (${formatPercent(stats.priceChange24h)})` : '';
+        statusMessage += `${emoji} ${symbol}: ${formatPrice(stats.price)}${change}\n`;
+    }
+
+    if (topMover) {
+        statusMessage += `\n🏆 Top performer: <b>${topMover[0]}</b> ${formatPercent(topMover[1].priceChange24h)}`;
+    }
+
+    if (breakouts.length > 0) {
+        statusMessage += `\n\n⚠️ <b>${breakouts.length} token(s) en breakout!</b>`;
+    }
+
+    statusMessage += `\n\n⏰ ${new Date().toLocaleString('fr-FR')}`;
+
+    await sendTelegramMessage(statusMessage);
+    log('📊 Rapport horaire envoyé');
 }
 
 // ==================== MAIN EXECUTION ====================
 
 async function main() {
-    log('========================================');
-    log('🚀 Solana Bollinger Bands Monitor VPS');
-    log('========================================');
-    log(`📊 Tokens surveillés: ${TOKENS.length}`);
-    log(`⏱️  Fréquence: ${CHECK_FREQUENCY} secondes`);
-    log(`📏 Bougies: ${TOKENS[0].candle_interval} minutes`);
-    log(`📈 Bollinger: ${BOLLINGER_PERIOD} périodes, ${BOLLINGER_STD} écarts-types`);
-    log(`⏳ Cooldown: ${ALERT_COOLDOWN / 60000} minutes`);
-    log(`📱 Telegram configuré: ${TELEGRAM_BOT_TOKEN ? 'Oui' : 'Non'}`);
-    log('========================================\n');
+    log('════════════════════════════════════════');
+    log('🚀 Solana Bollinger Bands Monitor v2.0');
+    log('════════════════════════════════════════');
+    log(`📊 Tokens: ${TOKENS.length}`);
+    log(`⏱️  Fréquence: ${CHECK_FREQUENCY}s`);
+    log(`📏 Bougies: ${TOKENS[0].candle_interval}min`);
+    log(`📈 Bollinger: ${BOLLINGER_PERIOD} périodes`);
+    log(`⏳ Cooldown alertes: ${ALERT_COOLDOWN / 60000}min`);
+    log(`📊 Rapport statut: toutes les heures`);
+    log('════════════════════════════════════════\n');
 
-    // Vérifier la configuration Telegram
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-        log('⚠️ ATTENTION: Configuration Telegram manquante!');
-        log('Définissez les variables d\'environnement:');
-        log('  TELEGRAM_BOT_TOKEN=votre_token');
-        log('  TELEGRAM_CHAT_ID=votre_chat_id');
+        log('⚠️ Configuration Telegram manquante!');
         process.exit(1);
     }
 
-    // Envoyer un message de démarrage
-    await sendTelegramMessage('🚀 Surveillance Solana démarrée!\n\n' +
-        `📊 Tokens: ${TOKENS.map(t => t.symbol).join(', ')}\n` +
-        `⏱️ Fréquence: ${CHECK_FREQUENCY}s\n` +
-        `📏 Bougies: ${TOKENS[0].candle_interval}min\n` +
-        `📈 Bollinger: ${BOLLINGER_PERIOD} périodes\n\n` +
-        `⏰ ${new Date().toLocaleString('fr-FR')}`);
+    // Message de démarrage amélioré
+    const startMessage =
+`🚀 <b>Bot Bollinger démarré!</b>
 
-    // Première vérification immédiate
+━━━━━━━━━━━━━━━━━━━━
+
+📊 <b>Tokens surveillés:</b>
+${TOKENS.map(t => `• ${t.symbol}`).join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━
+
+⚙️ <b>Configuration:</b>
+• Bougies: ${TOKENS[0].candle_interval} minutes
+• Bollinger: ${BOLLINGER_PERIOD} périodes, ${BOLLINGER_STD}σ
+• Check: toutes les ${CHECK_FREQUENCY}s
+• Cooldown: ${ALERT_COOLDOWN / 60000}min
+• Rapport: toutes les heures
+
+━━━━━━━━━━━━━━━━━━━━
+
+⏰ ${new Date().toLocaleString('fr-FR')}`;
+
+    await sendTelegramMessage(startMessage);
+
+    // Première vérification
     await performCheck();
 
-    // Planifier les vérifications suivantes
+    // Planifier les vérifications
     setInterval(performCheck, CHECK_FREQUENCY * 1000);
 
-    // Gérer l'arrêt gracieux
+    // Arrêt gracieux
     process.on('SIGINT', async () => {
-        log('\n⏸️  Arrêt du monitoring...');
-        await sendTelegramMessage(`⏸️ Surveillance Solana arrêtée.\n\n📊 Stats finales:\n  • ${checkCount} vérifications\n  • ${alertCount} alertes\n\n⏰ ${new Date().toLocaleString('fr-FR')}`);
+        log('\n⏸️ Arrêt...');
+        await sendTelegramMessage(
+`⏸️ <b>Bot arrêté</b>
+
+📊 Stats finales:
+• ${checkCount} vérifications
+• ${alertCount} alertes
+
+⏰ ${new Date().toLocaleString('fr-FR')}`
+        );
         process.exit(0);
     });
 }
 
-// Start the bot
 main().catch(error => {
     log(`❌ Erreur fatale: ${error.message}`);
     process.exit(1);
