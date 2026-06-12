@@ -43,7 +43,7 @@ Ouvrez `solana_monitor_enhanced.html` dans votre navigateur.
 
 ```bash
 # Sur le VPS (déjà configuré)
-ssh root@185.182.184.62
+ssh <user>@<vps-ip>
 
 # Voir les logs
 pm2 logs solana-bb
