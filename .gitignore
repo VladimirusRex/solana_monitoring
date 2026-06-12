@@ -27,6 +27,9 @@ Thumbs.db
 .pm2/
 ecosystem.config.js
 
+# État runtime du bot (cooldowns d'alerte)
+alert_state.json
+
 # Fichiers de backup potentiellement sensibles
 *.backup
 *.bak
